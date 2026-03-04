@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tokens — Base Type Tokens</title>
+<style>
+  :root { --bg: #fff; --border: #e5e5e5; --text: #1a1a1a; --muted: #6b7280; --accent: #2563eb; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px 48px; }
+  nav.top-nav { border-bottom: 1px solid var(--border); margin-bottom: 40px; padding: 14px 0; display: flex; align-items: baseline; gap: 24px; font-size: 13px; position: relative; }
+  nav.top-nav a { color: var(--muted); text-decoration: none; font-weight: 500; }
+  nav.top-nav a:hover { color: var(--text); }
+  nav.top-nav a.current { color: var(--text); }
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-toggle { color: var(--muted); font-weight: 500; font-size: 13px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 4px; background: none; border: none; font-family: inherit; padding: 0; }
+  .nav-dropdown-toggle:hover { color: var(--text); }
+  .nav-dropdown-toggle.current { color: var(--text); }
+  .nav-dropdown-toggle .caret { font-size: 10px; transition: transform 0.15s ease; }
+  .nav-dropdown.open .caret { transform: rotate(180deg); }
+  .nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); min-width: 160px; padding: 6px 0; z-index: 100; }
+  .nav-dropdown.open .nav-dropdown-menu { display: block; }
+  .nav-dropdown-menu a { display: block; padding: 8px 16px; color: var(--text); font-size: 14px; font-weight: 400; }
+  .nav-dropdown-menu a:hover { background: #f9fafb; }
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 16px; font-weight: 600; margin: 24px 0 12px; }
+  p { margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px; }
+  th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 13px; color: var(--text); }
+  td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbfc; }
+  code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+  .note { padding: 12px 16px; background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 0 8px 8px 0; font-size: 13px; margin: 16px 0; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .stat-card .value { font-size: 28px; font-weight: 700; color: var(--accent); }
+  .stat-card .label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .mode-tag { display: inline-block; font-size: 11px; background: #f3f4f6; color: var(--muted); padding: 1px 6px; border-radius: 3px; margin: 1px 2px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<nav class="top-nav">
+  <div class="nav-dropdown" id="tokensDropdown">
+    <button class="nav-dropdown-toggle current" onclick="toggleDropdown('tokensDropdown')">Tokens <span class="caret">&#9662;</span></button>
+    <div class="nav-dropdown-menu">
+      <a href="tokens-base.html">Base Tokens</a>
+      <a href="tokens-usage.html">Usage Tokens</a>
+    </div>
+  </div>
+  <div class="nav-dropdown" id="analyticsDropdown">
+    <button class="nav-dropdown-toggle" onclick="toggleDropdown('analyticsDropdown')">Type Analytics <span class="caret">&#9662;</span></button>
+    <div class="nav-dropdown-menu">
+      <a href="index.html">Base Tokens</a>
+      <a href="usage-tokens.html">Usage Tokens</a>
+    </div>
+  </div>
+  <a href="token-proposal.html">Token Proposal</a>
+  <a href="type-scale.html">Type Scale</a>
+  <a href="type-styles.html">Type Styles</a>
+</nav>
+
+<h1>Base Type Tokens</h1>
+<p class="subtitle">Source: Prism Base (<code>Mp8dBTFCjNZsLGrG4A5O9V</code>) &middot; 57 tokens across 28 modes</p>
+
+<h2>Summary</h2>
+<div class="stat-grid">
+  <div class="stat-card"><div class="value">57</div><div class="label">Total Base Tokens</div></div>
+  <div class="stat-card"><div class="value">2</div><div class="label">Font Families</div></div>
+  <div class="stat-card"><div class="value">5</div><div class="label">Font Weights</div></div>
+  <div class="stat-card"><div class="value">18</div><div class="label">Font Sizes (Numeric)</div></div>
+  <div class="stat-card"><div class="value">10</div><div class="label">Font Sizes (Semantic)</div></div>
+  <div class="stat-card"><div class="value">7</div><div class="label">Letter Spacing</div></div>
+  <div class="stat-card"><div class="value">15</div><div class="label">Line Heights</div></div>
+</div>
+
+<h2>Font Families (2 tokens)</h2>
+<table>
+  <tr><th>Token</th><th>DD Norms</th><th>IBM Plex Sans</th><th>Inter</th><th>System</th><th>Stratos Deliveroo</th><th>Omnes</th></tr>
+  <tr>
+    <td><code>base/font-family/default</code></td>
+    <td><span class="mode-tag">Default</span> <span class="mode-tag">Consumer</span> <span class="mode-tag">Caviar</span> <span class="mode-tag">Dasher</span> <span class="mode-tag">Dash Plus</span></td>
+    <td><span class="mode-tag">Deliveroo</span> <span class="mode-tag">Deliveroo Rider</span> <span class="mode-tag">Deliveroo Rider Plus</span></td>
+    <td><span class="mode-tag">Internal Tools</span></td>
+    <td><span class="mode-tag">Wolt Consumer</span> <span class="mode-tag">Wolt Courier</span> <span class="mode-tag">Wolt Courier Plus</span> <span class="mode-tag">Merchant</span> <span class="mode-tag">Wolt Merchant</span> <span class="mode-tag">Deliveroo Merchant</span> <span class="mode-tag">Merchant POS</span></td>
+    <td>&mdash;</td>
+    <td>&mdash;</td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/brand</code></td>
+    <td><span class="mode-tag">Default</span> <span class="mode-tag">Consumer</span> <span class="mode-tag">Caviar</span> <span class="mode-tag">Dasher</span> <span class="mode-tag">Dash Plus</span> <span class="mode-tag">Merchant</span></td>
+    <td>&mdash;</td>
+    <td><span class="mode-tag">Internal Tools</span></td>
+    <td><span class="mode-tag">Merchant POS</span></td>
+    <td><span class="mode-tag">Deliveroo</span> <span class="mode-tag">Deliveroo Rider</span> <span class="mode-tag">Deliveroo Rider Plus</span> <span class="mode-tag">Deliveroo Merchant</span></td>
+    <td><span class="mode-tag">Wolt Consumer</span> <span class="mode-tag">Wolt Courier</span> <span class="mode-tag">Wolt Courier Plus</span> <span class="mode-tag">Wolt Merchant</span></td>
+  </tr>
+</table>
+<div class="note">Dark mode variants inherit the same font as their light counterpart and are omitted for brevity.</div>
+
+<h2>Font Weights (5 tokens)</h2>
+<table>
+  <tr><th>Token</th><th>Default</th><th>Caviar</th><th>Internal Tools</th><th>Wolt Courier</th><th>Deliveroo</th><th>Merchant / POS</th></tr>
+  <tr><td><code>base/font-weight/light</code></td><td>Regular</td><td>Regular</td><td>Regular</td><td>Light</td><td>Regular</td><td>Regular</td></tr>
+  <tr><td><code>base/font-weight/regular</code></td><td>Medium</td><td>Regular</td><td>Regular</td><td>Regular</td><td>Regular</td><td>Medium</td></tr>
+  <tr><td><code>base/font-weight/semibold</code></td><td>Bold</td><td>Medium</td><td>Semi Bold</td><td>Semibold</td><td>Semibold</td><td>Semibold</td></tr>
+  <tr><td><code>base/font-weight/bold</code></td><td>Bold</td><td>Bold</td><td>Bold</td><td>Bold</td><td>Bold</td><td>Bold</td></tr>
+  <tr><td><code>base/font-weight/extrabold</code></td><td>ExtraBold</td><td>ExtraBold</td><td>ExtraBold</td><td>ExtraBold</td><td>ExtraBold</td><td>ExtraBold</td></tr>
+</table>
+
+<h2>Font Sizes &mdash; Numeric Scale (18 tokens)</h2>
+<table>
+  <tr><th>Token</th><th>Value (px)</th><th>Scale region</th></tr>
+  <tr><td><code>base/font-size/5</code></td><td>10</td><td>2px increments</td></tr>
+  <tr><td><code>base/font-size/10</code></td><td>12</td><td>2px increments</td></tr>
+  <tr><td><code>base/font-size/15</code></td><td>14</td><td>2px increments</td></tr>
+  <tr><td><code>base/font-size/20</code></td><td>16</td><td>2px increments</td></tr>
+  <tr><td><code>base/font-size/25</code></td><td>18</td><td>2px increments</td></tr>
+  <tr><td><code>base/font-size/30</code></td><td>20</td><td>2px increments</td></tr>
+  <tr><td><code>base/font-size/35</code></td><td>22</td><td>2px increments</td></tr>
+  <tr><td><code>base/font-size/40</code></td><td>24</td><td>2px increments</td></tr>
+  <tr><td><code>base/font-size/50</code></td><td>28</td><td>4px increments</td></tr>
+  <tr><td><code>base/font-size/60</code></td><td>32</td><td>4px increments</td></tr>
+  <tr><td><code>base/font-size/70</code></td><td>36</td><td>4px increments</td></tr>
+  <tr><td><code>base/font-size/80</code></td><td>40</td><td>4px increments</td></tr>
+  <tr><td><code>base/font-size/90</code></td><td>44</td><td>4px increments</td></tr>
+  <tr><td><code>base/font-size/100</code></td><td>48</td><td>irregular</td></tr>
+  <tr><td><code>base/font-size/120</code></td><td>56</td><td>irregular</td></tr>
+  <tr><td><code>base/font-size/130</code></td><td>60</td><td>irregular</td></tr>
+  <tr><td><code>base/font-size/160</code></td><td>72</td><td>irregular</td></tr>
+  <tr><td><code>base/font-size/190</code></td><td>84</td><td>irregular</td></tr>
+</table>
+
+<h2>Font Sizes &mdash; Semantic Aliases (10 tokens)</h2>
+<table>
+  <tr><th>Token</th><th>Maps to step</th><th>Resolved value</th></tr>
+  <tr><td><code>base/font-size/xx-small</code></td><td>&rarr; step 5</td><td>10px</td></tr>
+  <tr><td><code>base/font-size/x-small</code></td><td>&rarr; step 10</td><td>12px</td></tr>
+  <tr><td><code>base/font-size/small</code></td><td>&rarr; step 15</td><td>14px</td></tr>
+  <tr><td><code>base/font-size/medium</code></td><td>&rarr; step 20</td><td>16px</td></tr>
+  <tr><td><code>base/font-size/large</code></td><td>&rarr; step 25</td><td>18px</td></tr>
+  <tr><td><code>base/font-size/x-large</code></td><td>&rarr; step 30</td><td>20px</td></tr>
+  <tr><td><code>base/font-size/xx-large</code></td><td>&rarr; step 40</td><td>24px</td></tr>
+  <tr><td><code>base/font-size/xxx-large</code></td><td>&rarr; step 60</td><td>32px</td></tr>
+  <tr><td><code>base/font-size/xxxx-large</code></td><td>&rarr; step 80</td><td>40px</td></tr>
+  <tr><td><code>base/font-size/xxxxx-large</code></td><td>&rarr; step 90</td><td>44px</td></tr>
+</table>
+<div class="note">Steps 35, 50, 70, 100, 120, 130, 160, and 190 have no semantic alias.</div>
+
+<h2>Letter Spacing (7 tokens)</h2>
+<table>
+  <tr><th>Token</th><th>Value</th><th>Scale</th></tr>
+  <tr><td><code>base/letter-spacing/0</code></td><td>&minus;2</td><td>tightest</td></tr>
+  <tr><td><code>base/letter-spacing/10</code></td><td>&minus;0.8</td><td></td></tr>
+  <tr><td><code>base/letter-spacing/20</code></td><td>&minus;0.5</td><td></td></tr>
+  <tr><td><code>base/letter-spacing/30</code></td><td>&minus;0.4</td><td>~0.1 increments</td></tr>
+  <tr><td><code>base/letter-spacing/40</code></td><td>&minus;0.3</td><td>~0.1 increments</td></tr>
+  <tr><td><code>base/letter-spacing/50</code></td><td>&minus;0.2</td><td>~0.1 increments</td></tr>
+  <tr><td><code>base/letter-spacing/70</code></td><td>&minus;0.01</td><td>near zero</td></tr>
+</table>
+<div class="note">Deliveroo and Deliveroo Rider modes override all steps to 0 (no negative tracking).</div>
+
+<h2>Line Heights (15 tokens)</h2>
+<table>
+  <tr><th>Token</th><th>Value (px)</th><th>Scale</th></tr>
+  <tr><td><code>base/line-height/0</code></td><td>16</td><td>2px increments</td></tr>
+  <tr><td><code>base/line-height/5</code></td><td>18</td><td>2px increments</td></tr>
+  <tr><td><code>base/line-height/10</code></td><td>20</td><td>2px increments</td></tr>
+  <tr><td><code>base/line-height/15</code></td><td>22</td><td>2px increments</td></tr>
+  <tr><td><code>base/line-height/20</code></td><td>24</td><td>2px increments</td></tr>
+  <tr><td><code>base/line-height/25</code></td><td>26</td><td>2px increments</td></tr>
+  <tr><td><code>base/line-height/30</code></td><td>28</td><td>2px increments</td></tr>
+  <tr><td><code>base/line-height/35</code></td><td>30</td><td>2px increments</td></tr>
+  <tr><td><code>base/line-height/40</code></td><td>32</td><td>irregular</td></tr>
+  <tr><td><code>base/line-height/50</code></td><td>36</td><td>irregular</td></tr>
+  <tr><td><code>base/line-height/55</code></td><td>38</td><td>irregular</td></tr>
+  <tr><td><code>base/line-height/60</code></td><td>40</td><td>irregular</td></tr>
+  <tr><td><code>base/line-height/70</code></td><td>44</td><td>irregular</td></tr>
+  <tr><td><code>base/line-height/90</code></td><td>52</td><td>irregular</td></tr>
+  <tr><td><code>base/line-height/130</code></td><td>68</td><td>irregular</td></tr>
+</table>
+
+</div>
+<script>
+function toggleDropdown(id) {
+  document.querySelectorAll('.nav-dropdown').forEach(function(dd) {
+    if (dd.id !== id) dd.classList.remove('open');
+  });
+  document.getElementById(id).classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown').forEach(function(dd) { dd.classList.remove('open'); });
+  }
+});
+</script>
+</body>
+</html>

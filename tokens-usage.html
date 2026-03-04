@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tokens — Usage Type Tokens</title>
+<style>
+  :root { --bg: #fff; --border: #e5e5e5; --text: #1a1a1a; --muted: #6b7280; --accent: #2563eb; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px 48px; }
+  nav.top-nav { border-bottom: 1px solid var(--border); margin-bottom: 40px; padding: 14px 0; display: flex; align-items: baseline; gap: 24px; font-size: 13px; position: relative; }
+  nav.top-nav a { color: var(--muted); text-decoration: none; font-weight: 500; }
+  nav.top-nav a:hover { color: var(--text); }
+  nav.top-nav a.current { color: var(--text); }
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-toggle { color: var(--muted); font-weight: 500; font-size: 13px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 4px; background: none; border: none; font-family: inherit; padding: 0; }
+  .nav-dropdown-toggle:hover { color: var(--text); }
+  .nav-dropdown-toggle.current { color: var(--text); }
+  .nav-dropdown-toggle .caret { font-size: 10px; transition: transform 0.15s ease; }
+  .nav-dropdown.open .caret { transform: rotate(180deg); }
+  .nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); min-width: 160px; padding: 6px 0; z-index: 100; }
+  .nav-dropdown.open .nav-dropdown-menu { display: block; }
+  .nav-dropdown-menu a { display: block; padding: 8px 16px; color: var(--text); font-size: 14px; font-weight: 400; }
+  .nav-dropdown-menu a:hover { background: #f9fafb; }
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 16px; font-weight: 600; margin: 24px 0 12px; }
+  p { margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px; }
+  th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 13px; color: var(--text); }
+  td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbfc; }
+  code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+  .note { padding: 12px 16px; background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 0 8px 8px 0; font-size: 13px; margin: 16px 0; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .stat-card .value { font-size: 28px; font-weight: 700; color: var(--accent); }
+  .stat-card .label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .mode-tag { display: inline-block; font-size: 11px; background: #f3f4f6; color: var(--muted); padding: 1px 6px; border-radius: 3px; margin: 1px 2px; }
+  .check { color: #22c55e; }
+  .dash { color: #9ca3af; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<nav class="top-nav">
+  <div class="nav-dropdown" id="tokensDropdown">
+    <button class="nav-dropdown-toggle current" onclick="toggleDropdown('tokensDropdown')">Tokens <span class="caret">&#9662;</span></button>
+    <div class="nav-dropdown-menu">
+      <a href="tokens-base.html">Base Tokens</a>
+      <a href="tokens-usage.html">Usage Tokens</a>
+    </div>
+  </div>
+  <div class="nav-dropdown" id="analyticsDropdown">
+    <button class="nav-dropdown-toggle" onclick="toggleDropdown('analyticsDropdown')">Type Analytics <span class="caret">&#9662;</span></button>
+    <div class="nav-dropdown-menu">
+      <a href="index.html">Base Tokens</a>
+      <a href="usage-tokens.html">Usage Tokens</a>
+    </div>
+  </div>
+  <a href="token-proposal.html">Token Proposal</a>
+  <a href="type-scale.html">Type Scale</a>
+  <a href="type-styles.html">Type Styles</a>
+</nav>
+
+<h1>Usage Type Tokens</h1>
+<p class="subtitle">Source: Prism Foundations (<code>4dTVxONyPrT1oiEyUkYhIy</code>) &middot; 178 tokens across 32 modes</p>
+
+<h2>Summary</h2>
+<div class="stat-grid">
+  <div class="stat-card"><div class="value">178</div><div class="label">Total Usage Tokens</div></div>
+  <div class="stat-card"><div class="value">24</div><div class="label">Semantic Primitives</div></div>
+  <div class="stat-card"><div class="value">22</div><div class="label">Composite Variants</div></div>
+  <div class="stat-card"><div class="value">154</div><div class="label">Composite Properties</div></div>
+  <div class="stat-card"><div class="value">32</div><div class="label">Theme Modes</div></div>
+</div>
+
+<!-- ===================== SEMANTIC PRIMITIVES ===================== -->
+
+<h2>Semantic Primitives (24 tokens)</h2>
+
+<h3>Font Family (2 tokens)</h3>
+<table>
+  <tr><th>Token</th><th>Default mode</th><th>Mode overrides</th></tr>
+  <tr>
+    <td><code>usage/font-family/default</code></td>
+    <td>&rarr; <code>base/font-family/default</code></td>
+    <td><span class="mode-tag">Internal Tools</span> Inter &nbsp; <span class="mode-tag">Caviar</span> SQ Market &nbsp; <span class="mode-tag">Deliveroo</span> IBM Plex Sans &nbsp; <span class="mode-tag">Wolt / Merchant</span> System</td>
+  </tr>
+  <tr>
+    <td><code>usage/font-family/brand</code></td>
+    <td>&rarr; <code>base/font-family/brand</code></td>
+    <td><span class="mode-tag">Internal Tools</span> Inter &nbsp; <span class="mode-tag">Caviar</span> SQ Market &nbsp; <span class="mode-tag">Deliveroo</span> Stratos Deliveroo &nbsp; <span class="mode-tag">Wolt</span> Omnes &nbsp; <span class="mode-tag">Merchant POS</span> System</td>
+  </tr>
+</table>
+
+<h3>Font Weight (3 tokens)</h3>
+<table>
+  <tr><th>Token</th><th>Default mode</th><th>Mode overrides</th></tr>
+  <tr>
+    <td><code>usage/font-weight/default</code></td>
+    <td>&rarr; <code>base/font-weight/regular</code></td>
+    <td><span class="mode-tag">Internal Tools</span> Regular</td>
+  </tr>
+  <tr>
+    <td><code>usage/font-weight/strong</code></td>
+    <td>&rarr; <code>base/font-weight/bold</code></td>
+    <td><span class="mode-tag">Internal Tools</span> Semi Bold</td>
+  </tr>
+  <tr>
+    <td><code>usage/font-weight/xstrong</code></td>
+    <td>&rarr; <code>base/font-weight/extrabold</code></td>
+    <td><span class="mode-tag">Internal Tools</span> Extra Bold</td>
+  </tr>
+</table>
+
+<h3>Font Size (8 tokens)</h3>
+<table>
+  <tr><th>Token</th><th>Default mode (&rarr; base step &rarr; px)</th></tr>
+  <tr><td><code>usage/font-size/xx-small</code></td><td>&rarr; <code>base/font-size/10</code> &rarr; 12px</td></tr>
+  <tr><td><code>usage/font-size/x-small</code></td><td>&rarr; <code>base/font-size/15</code> &rarr; 14px</td></tr>
+  <tr><td><code>usage/font-size/small</code></td><td>&rarr; <code>base/font-size/20</code> &rarr; 16px</td></tr>
+  <tr><td><code>usage/font-size/medium</code></td><td>&rarr; <code>base/font-size/25</code> &rarr; 18px</td></tr>
+  <tr><td><code>usage/font-size/large</code></td><td>&rarr; <code>base/font-size/25</code> &rarr; 18px</td></tr>
+  <tr><td><code>usage/font-size/x-large</code></td><td>&rarr; <code>base/font-size/30</code> &rarr; 20px</td></tr>
+  <tr><td><code>usage/font-size/xx-large</code></td><td>&rarr; <code>base/font-size/40</code> &rarr; 24px</td></tr>
+  <tr><td><code>usage/font-size/xxx-large</code></td><td>&rarr; <code>base/font-size/60</code> &rarr; 32px</td></tr>
+</table>
+<div class="note"><code>medium</code> and <code>large</code> both resolve to the same base step (25 / 18px) in Default mode. They diverge in other brand modes.</div>
+
+<h3>Letter Spacing (3 tokens)</h3>
+<table>
+  <tr><th>Token</th><th>Default mode (&rarr; base step &rarr; value)</th></tr>
+  <tr><td><code>usage/letter-spacing/small</code></td><td>&rarr; <code>base/letter-spacing/70</code> &rarr; &minus;0.01</td></tr>
+  <tr><td><code>usage/letter-spacing/medium</code></td><td>&rarr; <code>base/letter-spacing/70</code> &rarr; &minus;0.01</td></tr>
+  <tr><td><code>usage/letter-spacing/large</code></td><td>&rarr; <code>base/letter-spacing/70</code> &rarr; &minus;0.01</td></tr>
+</table>
+<div class="note">All three sizes resolve to the same base step (70 / &minus;0.01) in Default mode. They diverge in Dash Plus, Wolt Courier Plus, and Deliveroo Rider modes.</div>
+
+<h3>Line Height (8 tokens)</h3>
+<table>
+  <tr><th>Token</th><th>Default mode (&rarr; base step &rarr; px)</th></tr>
+  <tr><td><code>usage/line-height/xx-small</code></td><td>&rarr; <code>base/line-height/5</code> &rarr; 18px</td></tr>
+  <tr><td><code>usage/line-height/x-small</code></td><td>&rarr; <code>base/line-height/10</code> &rarr; 20px</td></tr>
+  <tr><td><code>usage/line-height/small</code></td><td>&rarr; <code>base/line-height/15</code> &rarr; 22px</td></tr>
+  <tr><td><code>usage/line-height/medium</code></td><td>&rarr; <code>base/line-height/20</code> &rarr; 24px</td></tr>
+  <tr><td><code>usage/line-height/large</code></td><td>&rarr; <code>base/line-height/15</code> &rarr; 22px</td></tr>
+  <tr><td><code>usage/line-height/x-large</code></td><td>&rarr; <code>base/line-height/20</code> &rarr; 24px</td></tr>
+  <tr><td><code>usage/line-height/xx-large</code></td><td>&rarr; <code>base/line-height/30</code> &rarr; 28px</td></tr>
+  <tr><td><code>usage/line-height/xxx-large</code></td><td>&rarr; <code>base/line-height/60</code> &rarr; 40px</td></tr>
+</table>
+<div class="note"><code>small</code> and <code>large</code> resolve to the same step (15 / 22px); <code>medium</code> and <code>x-large</code> resolve to the same step (20 / 24px). They diverge in other brand modes.</div>
+
+<!-- ===================== COMPOSITE TYPE STYLES ===================== -->
+
+<h2>Composite Type Styles (22 variants, 154 properties)</h2>
+
+<h3>Overview</h3>
+<table>
+  <tr><th>Style</th><th>Sizes</th><th>Weight variants</th><th>Total variants</th><th>Properties</th></tr>
+  <tr><td><strong>display</strong></td><td>medium, large, x-large</td><td>single</td><td>3</td><td>21</td></tr>
+  <tr><td><strong>title</strong></td><td>medium, large</td><td>single</td><td>2</td><td>13</td></tr>
+  <tr><td><strong>body</strong></td><td>small, medium, large</td><td>default, strong</td><td>6</td><td>42</td></tr>
+  <tr><td><strong>label</strong></td><td>x-small, small, medium, large</td><td>default, strong</td><td>8</td><td>51</td></tr>
+  <tr><td><strong>link</strong></td><td>small, medium, large</td><td>single</td><td>3</td><td>21</td></tr>
+</table>
+<div class="note">Each variant decomposes into 5&ndash;7 property-variables: font-family, font-size, font-weight, letter-spacing, line-height, and optionally text-case and text-decoration.</div>
+
+<h3>Display (3 variants, 21 properties)</h3>
+<table>
+  <tr><th>Variant</th><th>font-family</th><th>font-size</th><th>font-weight</th><th>letter-spacing</th><th>line-height</th><th>text-case</th><th>text-decoration</th></tr>
+  <tr><td><code>display/medium</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>display/large</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>display/x-large</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+</table>
+
+<h3>Title (2 variants, 13 properties)</h3>
+<table>
+  <tr><th>Variant</th><th>font-family</th><th>font-size</th><th>font-weight</th><th>letter-spacing</th><th>line-height</th><th>text-case</th><th>text-decoration</th></tr>
+  <tr><td><code>title/medium</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>title/large</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="dash">&ndash;</td></tr>
+</table>
+<div class="note"><code>title/large</code> is missing text-decoration.</div>
+
+<h3>Body (6 variants, 42 properties)</h3>
+<table>
+  <tr><th>Variant</th><th>font-family</th><th>font-size</th><th>font-weight</th><th>letter-spacing</th><th>line-height</th><th>text-case</th><th>text-decoration</th></tr>
+  <tr><td><code>body/small/default</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>body/small/strong</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>body/medium/default</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>body/medium/strong</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>body/large/default</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>body/large/strong</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+</table>
+
+<h3>Label (8 variants, 51 properties)</h3>
+<table>
+  <tr><th>Variant</th><th>font-family</th><th>font-size</th><th>font-weight</th><th>letter-spacing</th><th>line-height</th><th>text-case</th><th>text-decoration</th></tr>
+  <tr><td><code>label/x-small/default</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>label/x-small/strong</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>label/small/default</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="dash">&ndash;</td><td class="dash">&ndash;</td></tr>
+  <tr><td><code>label/small/strong</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>label/medium/default</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>label/medium/strong</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="dash">&ndash;</td></tr>
+  <tr><td><code>label/large/default</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="dash">&ndash;</td><td class="dash">&ndash;</td></tr>
+  <tr><td><code>label/large/strong</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+</table>
+<div class="note"><code>label/small/default</code> and <code>label/large/default</code> are missing text-case and text-decoration. <code>label/medium/strong</code> is missing text-decoration.</div>
+
+<h3>Link (3 variants, 21 properties)</h3>
+<table>
+  <tr><th>Variant</th><th>font-family</th><th>font-size</th><th>font-weight</th><th>letter-spacing</th><th>line-height</th><th>text-case</th><th>text-decoration</th></tr>
+  <tr><td><code>link/small</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>link/medium</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+  <tr><td><code>link/large</code></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+</table>
+
+</div>
+<script>
+function toggleDropdown(id) {
+  document.querySelectorAll('.nav-dropdown').forEach(function(dd) {
+    if (dd.id !== id) dd.classList.remove('open');
+  });
+  document.getElementById(id).classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown').forEach(function(dd) { dd.classList.remove('open'); });
+  }
+});
+</script>
+</body>
+</html>

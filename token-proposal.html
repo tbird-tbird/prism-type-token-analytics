@@ -30,8 +30,15 @@
 <div class="container">
 
 <nav class="top-nav">
-  <div class="nav-dropdown" id="typeAnalyticsDropdown">
-    <button class="nav-dropdown-toggle" onclick="document.getElementById('typeAnalyticsDropdown').classList.toggle('open')">Type Analytics <span class="caret">&#9662;</span></button>
+  <div class="nav-dropdown" id="tokensDropdown">
+    <button class="nav-dropdown-toggle" onclick="toggleDropdown('tokensDropdown')">Tokens <span class="caret">&#9662;</span></button>
+    <div class="nav-dropdown-menu">
+      <a href="tokens-base.html">Base Tokens</a>
+      <a href="tokens-usage.html">Usage Tokens</a>
+    </div>
+  </div>
+  <div class="nav-dropdown" id="analyticsDropdown">
+    <button class="nav-dropdown-toggle" onclick="toggleDropdown('analyticsDropdown')">Type Analytics <span class="caret">&#9662;</span></button>
     <div class="nav-dropdown-menu">
       <a href="index.html">Base Tokens</a>
       <a href="usage-tokens.html">Usage Tokens</a>
@@ -46,9 +53,16 @@
 
 </div>
 <script>
+function toggleDropdown(id) {
+  document.querySelectorAll('.nav-dropdown').forEach(function(dd) {
+    if (dd.id !== id) dd.classList.remove('open');
+  });
+  document.getElementById(id).classList.toggle('open');
+}
 document.addEventListener('click', function(e) {
-  var dd = document.getElementById('typeAnalyticsDropdown');
-  if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown').forEach(function(dd) { dd.classList.remove('open'); });
+  }
 });
 </script>
 </body>

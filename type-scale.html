@@ -68,6 +68,8 @@
   .scale-specimen { flex: 1; line-height: 1.2; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; transition: font-size 0.3s ease; font-family: 'SF Pro', 'SF Pro Display', -apple-system, system-ui, sans-serif; }
   .scale-flag { display: inline-block; font-size: 11px; font-weight: 500; color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; border-radius: 4px; padding: 2px 8px; margin-left: 12px; vertical-align: middle; }
   .scale-px.flagged { color: #dc2626; }
+  .scale-section { padding: 20px 0 8px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .scale-section:first-child { padding-top: 0; }
 </style>
 <script>(function(){var t=localStorage.getItem("prism-theme")||"light";document.documentElement.setAttribute("data-theme",t)})()</script>
 </head>
@@ -128,6 +130,11 @@ var scales = {
   courier: [40, 28, 22, 18, 16],
 };
 
+var sectionBreaks = {
+  consumer: { displayAbove: 16, bodyAtOrBelow: 16 },
+  courier:  { displayAbove: 18, bodyAtOrBelow: 18 }
+};
+
 var foundationSet = {};
 scales.foundation.forEach(function(s) { foundationSet[s] = true; });
 
@@ -140,12 +147,31 @@ var currentFont = 'sfpro';
 function renderScale(name) {
   var sizes = scales[name];
   var list = document.getElementById('scaleList');
-  var info = document.getElementById('scaleInfo');
   document.getElementById('stepCount').textContent = sizes.length;
-  document.getElementById('scaleRange').textContent = sizes[sizes.length - 1] + 'px – ' + sizes[0] + 'px';
+  document.getElementById('scaleRange').textContent = sizes[sizes.length - 1] + 'px \u2013 ' + sizes[0] + 'px';
 
   list.innerHTML = '';
+  var breaks = sectionBreaks[name];
+  var addedDisplay = false;
+  var addedBody = false;
+
   sizes.forEach(function(px) {
+    if (breaks) {
+      if (!addedDisplay && px > breaks.bodyAtOrBelow) {
+        var hdr = document.createElement('li');
+        hdr.className = 'scale-section';
+        hdr.textContent = 'Display';
+        list.appendChild(hdr);
+        addedDisplay = true;
+      }
+      if (!addedBody && px <= breaks.bodyAtOrBelow) {
+        var hdr = document.createElement('li');
+        hdr.className = 'scale-section';
+        hdr.textContent = 'Body';
+        list.appendChild(hdr);
+        addedBody = true;
+      }
+    }
     var li = document.createElement('li');
     li.className = 'scale-item';
     var notInFoundation = name !== 'foundation' && !foundationSet[px];

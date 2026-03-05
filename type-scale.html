@@ -50,7 +50,8 @@
   h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
   .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
 
-  .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+  .toggle-row { display: flex; align-items: center; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+  .font-toggles { display: flex; align-items: center; gap: 12px; margin-left: auto; }
   .scale-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .scale-toggle button { padding: 10px 20px; font-size: 13px; font-weight: 500; font-family: inherit; border: none; background: #fff; color: var(--muted); cursor: pointer; transition: all 0.15s ease; border-right: 1px solid var(--border); }
   .scale-toggle button:last-child { border-right: none; }
@@ -109,9 +110,16 @@
     <button data-scale="consumer">Consumer</button>
     <button data-scale="courier">Courier+</button>
   </div>
-  <div class="scale-toggle" id="fontToggle">
-    <button class="active" data-font="sfpro">SF Pro</button>
-    <button data-font="inter">Inter</button>
+  <div class="font-toggles">
+    <div class="scale-toggle" id="fontToggle">
+      <button class="active" data-font="sfpro">SF Pro</button>
+      <button data-font="inter">Inter</button>
+    </div>
+    <div class="scale-toggle" id="displayFontToggle">
+      <button class="active" data-dfont="ddnorms">DD Norms</button>
+      <button data-dfont="omnes">Omnes</button>
+      <button data-dfont="stratos">Stratos</button>
+    </div>
   </div>
 </div>
 
@@ -142,7 +150,14 @@ var fontMap = {
   sfpro: "'SF Pro', 'SF Pro Display', -apple-system, system-ui, sans-serif",
   inter: "'Inter', sans-serif"
 };
+var displayFontMap = {
+  ddnorms: "'DD Norms', 'DDNorms', sans-serif",
+  omnes: "'Omnes', 'OmnesPro', sans-serif",
+  stratos: "'Stratos', 'StratosLC', sans-serif"
+};
 var currentFont = 'sfpro';
+var currentDisplayFont = 'ddnorms';
+var currentScale = 'foundation';
 
 function renderScale(name) {
   var sizes = scales[name];
@@ -172,12 +187,14 @@ function renderScale(name) {
         addedBody = true;
       }
     }
+    var isDisplay = breaks ? px > breaks.bodyAtOrBelow : false;
+    var font = isDisplay ? displayFontMap[currentDisplayFont] : fontMap[currentFont];
     var li = document.createElement('li');
     li.className = 'scale-item';
     var notInFoundation = name !== 'foundation' && !foundationSet[px];
     li.innerHTML =
       '<div class="scale-meta"><span class="scale-px' + (notInFoundation ? ' flagged' : '') + '">' + px + 'px</span></div>' +
-      '<div class="scale-specimen" style="font-size:' + px + 'px;font-family:' + fontMap[currentFont] + '">The quick brown fox' +
+      '<div class="scale-specimen" style="font-size:' + px + 'px;font-family:' + font + '">The quick brown fox' +
       (notInFoundation ? '<span class="scale-flag">Not in Foundation scale</span>' : '') +
       '</div>';
     list.appendChild(li);
@@ -189,7 +206,8 @@ document.getElementById('scaleToggle').addEventListener('click', function(e) {
   if (!btn) return;
   this.querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
-  renderScale(btn.dataset.scale);
+  currentScale = btn.dataset.scale;
+  renderScale(currentScale);
 });
 
 renderScale('foundation');
@@ -200,9 +218,16 @@ document.getElementById('fontToggle').addEventListener('click', function(e) {
   this.querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
   currentFont = btn.dataset.font;
-  document.querySelectorAll('.scale-specimen').forEach(function(el) {
-    el.style.fontFamily = fontMap[currentFont];
-  });
+  renderScale(currentScale);
+});
+
+document.getElementById('displayFontToggle').addEventListener('click', function(e) {
+  var btn = e.target.closest('button');
+  if (!btn) return;
+  this.querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  currentDisplayFont = btn.dataset.dfont;
+  renderScale(currentScale);
 });
 
 function toggleDropdown(id) {

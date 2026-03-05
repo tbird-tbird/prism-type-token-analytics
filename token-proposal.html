@@ -6,6 +6,28 @@
 <title>Token Proposal</title>
 <style>
   :root { --bg: #fff; --border: #e5e5e5; --text: #1a1a1a; --muted: #6b7280; }
+  [data-theme="dark"] { --bg: #0f0f0f; --border: #2a2a2a; --text: #e5e5e5; --muted: #888; --accent: #60a5fa; }
+  [data-theme="dark"] .nav-dropdown-menu { background: #1a1a1a; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+  [data-theme="dark"] .nav-dropdown-menu a:hover { background: #222; }
+  [data-theme="dark"] td { border-bottom-color: #1e1e1e; }
+  [data-theme="dark"] tr:hover td { background: #161616; }
+  [data-theme="dark"] code { background: #1e1e1e; color: #ccc; }
+  [data-theme="dark"] .note { background: #191400; border-left-color: #b45309; }
+  [data-theme="dark"] .mode-tag { background: #1e1e1e; }
+  [data-theme="dark"] .bar { background: #333; }
+  [data-theme="dark"] .tier-1 { background: #1c0606; }
+  [data-theme="dark"] .tier-2 { background: #191400; }
+  [data-theme="dark"] .stat-card { background: #141414; border-color: var(--border); }
+  [data-theme="dark"] .scale-toggle button { background: transparent; }
+  [data-theme="dark"] .scale-toggle button.active { background: #e5e5e5; color: #0f0f0f; }
+  [data-theme="dark"] .scale-toggle button:hover { background: #1a1a1a; }
+  [data-theme="dark"] .scale-item { border-bottom-color: #1e1e1e; }
+  [data-theme="dark"] .scale-item:hover { background: #161616; }
+  [data-theme="dark"] .scale-flag { background: #2a0808; border-color: #7f1d1d; color: #f87171; }
+  [data-theme="dark"] .scale-px.flagged { color: #f87171; }
+  .theme-toggle { margin-left: auto; display: inline-flex; border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+  .theme-toggle button { padding: 6px 16px; font-size: 13px; font-weight: 500; font-family: inherit; border: none; background: transparent; color: var(--muted); cursor: pointer; border-radius: 999px; transition: all 0.2s ease; }
+  .theme-toggle button.active { background: var(--text); color: var(--bg); }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
   .container { max-width: 1100px; margin: 0 auto; padding: 0 24px 48px; }
@@ -25,6 +47,7 @@
   .nav-dropdown-menu a:hover { background: #f9fafb; }
   .placeholder { display: flex; align-items: center; justify-content: center; height: 60vh; font-size: 16px; color: var(--muted); }
 </style>
+<script>(function(){var t=localStorage.getItem("prism-theme")||"light";document.documentElement.setAttribute("data-theme",t)})()</script>
 </head>
 <body>
 <div class="container">
@@ -47,6 +70,10 @@
   <a href="token-proposal.html" class="current">Token Proposal</a>
   <a href="type-scale.html">Type Scale</a>
   <a href="type-styles.html">Type Styles</a>
+  <div class="theme-toggle">
+    <button data-theme="light">Light</button>
+    <button data-theme="dark">Dark</button>
+  </div>
 </nav>
 
 <div class="placeholder">In progress</div>
@@ -63,6 +90,19 @@ document.addEventListener('click', function(e) {
   if (!e.target.closest('.nav-dropdown')) {
     document.querySelectorAll('.nav-dropdown').forEach(function(dd) { dd.classList.remove('open'); });
   }
+});
+
+var _pt = localStorage.getItem('prism-theme') || 'light';
+document.querySelectorAll('.theme-toggle button').forEach(function(b) {
+  b.classList.toggle('active', b.dataset.theme === _pt);
+  b.addEventListener('click', function() {
+    _pt = this.dataset.theme;
+    document.documentElement.setAttribute('data-theme', _pt);
+    localStorage.setItem('prism-theme', _pt);
+    document.querySelectorAll('.theme-toggle button').forEach(function(b2) {
+      b2.classList.toggle('active', b2.dataset.theme === _pt);
+    });
+  });
 });
 </script>
 </body>

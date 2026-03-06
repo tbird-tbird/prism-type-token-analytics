@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Token Proposal</title>
+<title>Token Proposal — Prism Base Type Tokens</title>
 <style>
-  :root { --bg: #fff; --border: #e5e5e5; --text: #1a1a1a; --muted: #6b7280; }
+  :root { --bg: #fff; --border: #e5e5e5; --text: #1a1a1a; --muted: #6b7280; --accent: #2563eb; }
   [data-theme="dark"] { --bg: #0f0f0f; --border: #2a2a2a; --text: #e5e5e5; --muted: #888; --accent: #60a5fa; }
   [data-theme="dark"] .nav-dropdown-menu { background: #1a1a1a; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
   [data-theme="dark"] .nav-dropdown-menu a:hover { background: #222; }
@@ -13,18 +13,12 @@
   [data-theme="dark"] tr:hover td { background: #161616; }
   [data-theme="dark"] code { background: #1e1e1e; color: #ccc; }
   [data-theme="dark"] .note { background: #191400; border-left-color: #b45309; }
-  [data-theme="dark"] .mode-tag { background: #1e1e1e; }
-  [data-theme="dark"] .bar { background: #333; }
-  [data-theme="dark"] .tier-1 { background: #1c0606; }
-  [data-theme="dark"] .tier-2 { background: #191400; }
+  [data-theme="dark"] .note-blue { background: #0c1524; border-left-color: #2563eb; }
+  [data-theme="dark"] .note-green { background: #071a0e; border-left-color: #16a34a; }
   [data-theme="dark"] .stat-card { background: #141414; border-color: var(--border); }
-  [data-theme="dark"] .scale-toggle button { background: transparent; }
-  [data-theme="dark"] .scale-toggle button.active { background: #e5e5e5; color: #0f0f0f; }
-  [data-theme="dark"] .scale-toggle button:hover { background: #1a1a1a; }
-  [data-theme="dark"] .scale-item { border-bottom-color: #1e1e1e; }
-  [data-theme="dark"] .scale-item:hover { background: #161616; }
-  [data-theme="dark"] .scale-flag { background: #2a0808; border-color: #7f1d1d; color: #f87171; }
-  [data-theme="dark"] .scale-px.flagged { color: #f87171; }
+  [data-theme="dark"] .change-added { background: #071a0e; }
+  [data-theme="dark"] .change-removed { background: #1a0808; }
+  [data-theme="dark"] .change-modified { background: #191400; }
   .theme-toggle { margin-left: auto; display: flex; align-items: center; }
   .theme-toggle button { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; padding: 0; }
   .theme-toggle button:hover { color: var(--text); border-color: var(--text); }
@@ -46,7 +40,44 @@
   .nav-dropdown.open .nav-dropdown-menu { display: block; }
   .nav-dropdown-menu a { display: block; padding: 8px 16px; color: var(--text); font-size: 14px; font-weight: 400; }
   .nav-dropdown-menu a:hover { background: #f9fafb; }
-  .placeholder { display: flex; align-items: center; justify-content: center; height: 60vh; font-size: 16px; color: var(--muted); }
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 16px; font-weight: 600; margin: 24px 0 12px; }
+  p { margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px; }
+  th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 13px; color: var(--text); }
+  td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbfc; }
+  code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+  .note { padding: 12px 16px; background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 0 8px 8px 0; font-size: 13px; margin: 16px 0; }
+  .note-blue { padding: 12px 16px; background: #eff6ff; border-left: 3px solid #2563eb; border-radius: 0 8px 8px 0; font-size: 13px; margin: 16px 0; }
+  .note-green { padding: 12px 16px; background: #f0fdf4; border-left: 3px solid #16a34a; border-radius: 0 8px 8px 0; font-size: 13px; margin: 16px 0; }
+  ul, ol { margin: 0 0 16px 24px; }
+  li { margin-bottom: 6px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .stat-card .value { font-size: 28px; font-weight: 700; color: var(--accent); }
+  .stat-card .label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .stat-card.green .value { color: #16a34a; }
+  .stat-card.red .value { color: #dc2626; }
+  .stat-card.orange .value { color: #d97706; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+  .tag-added { background: #dcfce7; color: #166534; }
+  .tag-removed { background: #fef2f2; color: #991b1b; }
+  .tag-modified { background: #fefce8; color: #854d0e; }
+  .tag-renamed { background: #eff6ff; color: #1e40af; }
+  .tag-unchanged { background: #f3f4f6; color: #6b7280; }
+  [data-theme="dark"] .tag-added { background: #14532d; color: #86efac; }
+  [data-theme="dark"] .tag-removed { background: #450a0a; color: #fca5a5; }
+  [data-theme="dark"] .tag-modified { background: #422006; color: #fde68a; }
+  [data-theme="dark"] .tag-renamed { background: #1e3a5f; color: #93c5fd; }
+  [data-theme="dark"] .tag-unchanged { background: #1e1e1e; color: #888; }
+  .change-row td { font-size: 13px; }
+  .val-old { color: var(--muted); text-decoration: line-through; }
+  .val-new { font-weight: 600; }
+  .arrow { color: var(--muted); margin: 0 4px; }
 </style>
 <script>(function(){var t=localStorage.getItem("prism-theme")||"light";document.documentElement.setAttribute("data-theme",t)})()</script>
 </head>
@@ -76,7 +107,245 @@
   </div>
 </nav>
 
-<div class="placeholder">In progress</div>
+<h1>Prism Base Type Token Proposal</h1>
+<p class="subtitle">Proposed changes to the base type token architecture &middot; Source: Prism Base (<code>Mp8dBTFCjNZsLGrG4A5O9V</code>)</p>
+
+<h2>Overview</h2>
+
+<div class="stat-grid">
+  <div class="stat-card"><div class="value">57</div><div class="label">Current Tokens</div></div>
+  <div class="stat-card"><div class="value">54</div><div class="label">Proposed Tokens</div></div>
+  <div class="stat-card green"><div class="value">+8</div><div class="label">Tokens Added</div></div>
+  <div class="stat-card red"><div class="value">&minus;11</div><div class="label">Tokens Removed</div></div>
+</div>
+
+<div class="note-blue"><strong>Key architectural change:</strong> Font-size and line-height tokens switch from an index-based naming system (e.g., <code>base/font-size/25</code> = 18px) to a value-based system (e.g., <code>base/font-size/18</code> = 18). This makes token names more intuitive, reduces the chance of errors, and ensures abstraction happens at the usage layer rather than the base layer.</div>
+
+<h2>Summary of changes by property</h2>
+
+<table>
+  <tr><th>Property</th><th>Current</th><th>Proposed</th><th>Net change</th><th>Key changes</th></tr>
+  <tr>
+    <td><strong>font-family</strong></td><td>2 tokens</td><td>3 tokens</td><td style="color:#16a34a">+1</td>
+    <td>Added <code>mono</code> for monospaced fonts</td>
+  </tr>
+  <tr>
+    <td><strong>font-weight</strong></td><td>5 tokens</td><td>6 tokens</td><td style="color:#16a34a">+1</td>
+    <td>Added <code>regular</code> (400) to maintain consistent scale</td>
+  </tr>
+  <tr>
+    <td><strong>font-size</strong></td><td>28 tokens</td><td>17 tokens</td><td style="color:#dc2626">&minus;11</td>
+    <td>Removed 10 unused semantic aliases + 1 numeric; switched to value-based naming</td>
+  </tr>
+  <tr>
+    <td><strong>letter-spacing</strong></td><td>7 tokens</td><td>9 tokens</td><td style="color:#16a34a">+2</td>
+    <td>Revised scale; added <code>&minus;0.1</code>, changed <code>&minus;0.01</code> &rarr; <code>0</code>, changed <code>&minus;0.5</code> &rarr; <code>&minus;0.6</code></td>
+  </tr>
+  <tr>
+    <td><strong>line-height</strong></td><td>15 tokens</td><td>19 tokens</td><td style="color:#16a34a">+4</td>
+    <td>Added 5 large values (48&ndash;80); removed step 55 (38px); switched to value-based naming</td>
+  </tr>
+</table>
+
+<!-- ==================== FONT FAMILY ==================== -->
+<h2>base/font-family</h2>
+<p>Added a monospaced font-family token to support code and tabular content. Current tokens are unchanged.</p>
+
+<table>
+  <tr><th>Token</th><th>Value</th><th>Description</th><th>Status</th></tr>
+  <tr>
+    <td><code>base/font-family/default</code></td>
+    <td>System (SF Pro / Inter)</td>
+    <td>Default fonts for consistent, performance-optimised typographic foundation</td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/brand</code></td>
+    <td>DD Norms / Omnes / Stratos</td>
+    <td>Brand fonts used when there is a need to express a brand</td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/mono</code></td>
+    <td>SF Mono / Inter Mono</td>
+    <td>Monospaced fonts for text requiring precise formatting, such as code references</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+</table>
+
+<!-- ==================== FONT WEIGHT ==================== -->
+<h2>base/font-weight</h2>
+<p>Added <code>regular</code> (400) to fill the gap between <code>light</code> (300) and <code>medium</code> (500), maintaining a complete and consistent weight scale. Values are stored as numeric CSS font-weight values for cross-platform consistency.</p>
+
+<div class="note"><strong>Why numeric values?</strong> The same numeric weight (e.g., 800) may be labelled differently across fonts &mdash; "Extra Bold" in Inter, "Heavy" in SF Pro. Numeric values are unambiguous and align with the <a href="https://www.designtokens.org/tr/2025.10/format/#font-weight" style="color: inherit;">W3C Design Tokens spec</a>, which treats strings as aliases for numeric weights.</div>
+
+<table>
+  <tr><th>Token</th><th>Value</th><th>Description</th><th>Status</th></tr>
+  <tr>
+    <td><code>base/font-weight/light</code></td><td>300</td><td></td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-weight/regular</code></td><td>400</td><td></td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-weight/medium</code></td><td>500</td><td>The default font weight</td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-weight/semibold</code></td><td>600</td><td></td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-weight/bold</code></td><td>700</td><td>Used for headings</td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-weight/extrabold</code></td><td>800</td><td></td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
+  </tr>
+</table>
+
+<!-- ==================== FONT SIZE ==================== -->
+<h2>base/font-size</h2>
+<p>The most significant structural change. Token naming switches from an index-based system to a value-based system where the token name matches the pixel value. All 10 semantic t-shirt size aliases are removed (they were 100% unreferenced). <code>base/font-size/190</code> (84px) is also removed.</p>
+
+<div class="note-green"><strong>Why value-based naming?</strong> With index-based naming, <code>base/font-size/25</code> = 18px required memorising a lookup table. With value-based naming, <code>base/font-size/18</code> = 18px is self-documenting. This reduces cognitive load and errors, while ensuring any abstraction (like semantic sizing) happens at the usage token layer where it belongs.</div>
+
+<h3>Proposed scale (17 tokens)</h3>
+<table>
+  <tr><th>Proposed token</th><th>Value (px)</th><th>Previous token</th><th>Status</th></tr>
+  <tr><td><code>base/font-size/10</code></td><td>10</td><td><code>base/font-size/5</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/12</code></td><td>12</td><td><code>base/font-size/10</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/14</code></td><td>14</td><td><code>base/font-size/15</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/16</code></td><td>16</td><td><code>base/font-size/20</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/18</code></td><td>18</td><td><code>base/font-size/25</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/20</code></td><td>20</td><td><code>base/font-size/30</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/22</code></td><td>22</td><td><code>base/font-size/35</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/24</code></td><td>24</td><td><code>base/font-size/40</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/28</code></td><td>28</td><td><code>base/font-size/50</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/32</code></td><td>32</td><td><code>base/font-size/60</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/36</code></td><td>36</td><td><code>base/font-size/70</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/40</code></td><td>40</td><td><code>base/font-size/80</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/44</code></td><td>44</td><td><code>base/font-size/90</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/48</code></td><td>48</td><td><code>base/font-size/100</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/56</code></td><td>56</td><td><code>base/font-size/120</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/60</code></td><td>60</td><td><code>base/font-size/130</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/72</code></td><td>72</td><td><code>base/font-size/160</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+</table>
+
+<h3>Removed tokens (11 tokens)</h3>
+<table>
+  <tr><th>Removed token</th><th>Value</th><th>Reason</th></tr>
+  <tr><td><code>base/font-size/190</code></td><td>84px</td><td>Only referenced by 1 mode (Merchant POS Plus); oversized for current needs</td></tr>
+  <tr><td><code>base/font-size/xx-small</code></td><td>&rarr; step 5</td><td rowspan="10" style="vertical-align:middle">Semantic aliases with zero references across all 32 modes. Usage tokens reference numeric steps directly, making this layer redundant.</td></tr>
+  <tr><td><code>base/font-size/x-small</code></td><td>&rarr; step 10</td></tr>
+  <tr><td><code>base/font-size/small</code></td><td>&rarr; step 15</td></tr>
+  <tr><td><code>base/font-size/medium</code></td><td>&rarr; step 20</td></tr>
+  <tr><td><code>base/font-size/large</code></td><td>&rarr; step 25</td></tr>
+  <tr><td><code>base/font-size/x-large</code></td><td>&rarr; step 30</td></tr>
+  <tr><td><code>base/font-size/xx-large</code></td><td>&rarr; step 40</td></tr>
+  <tr><td><code>base/font-size/xxx-large</code></td><td>&rarr; step 60</td></tr>
+  <tr><td><code>base/font-size/xxxx-large</code></td><td>&rarr; step 80</td></tr>
+  <tr><td><code>base/font-size/xxxxx-large</code></td><td>&rarr; step 90</td></tr>
+</table>
+
+<!-- ==================== LETTER SPACING ==================== -->
+<h2>base/letter-spacing</h2>
+<p>The letter-spacing scale has been revised for better distribution. Key changes: added a <code>&minus;0.1</code> value between <code>&minus;0.2</code> and <code>0</code>, changed <code>&minus;0.5</code> to <code>&minus;0.6</code> for more even spacing, and changed <code>&minus;0.01</code> to <code>0</code> (effectively no letter-spacing). Letter-spacing retains index-based naming as the values are not intuitive enough to serve as names.</p>
+
+<table>
+  <tr><th>Token</th><th>Proposed value</th><th>Previous value</th><th>Status</th></tr>
+  <tr>
+    <td><code>base/letter-spacing/0</code></td><td>&minus;2</td><td>&minus;2</td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/10</code></td>
+    <td class="val-new">&minus;1</td>
+    <td><span class="val-old">&minus;0.8</span></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/20</code></td>
+    <td class="val-new">&minus;0.8</td>
+    <td><span class="val-old">&minus;0.5</span></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/30</code></td>
+    <td class="val-new">&minus;0.6</td>
+    <td><span class="val-old">&minus;0.4</span></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/40</code></td>
+    <td class="val-new">&minus;0.4</td>
+    <td><span class="val-old">&minus;0.3</span></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/50</code></td>
+    <td class="val-new">&minus;0.3</td>
+    <td><span class="val-old">&minus;0.2</span></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/60</code></td>
+    <td>&minus;0.2</td><td>&mdash;</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/70</code></td>
+    <td class="val-new">&minus;0.1</td>
+    <td><span class="val-old">&minus;0.01</span></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/80</code></td>
+    <td>0</td><td>&mdash;</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+</table>
+
+<div class="note"><strong>Scale distribution:</strong> The current scale has uneven gaps: &minus;2, &minus;0.8, &minus;0.5, &minus;0.4, &minus;0.3, &minus;0.2, &minus;0.01. The proposed scale fills the gaps more evenly: &minus;2, &minus;1, &minus;0.8, &minus;0.6, &minus;0.4, &minus;0.3, &minus;0.2, &minus;0.1, 0. This provides finer control in the &minus;0.2 to 0 range where most body text letter-spacing lives.</div>
+
+<!-- ==================== LINE HEIGHT ==================== -->
+<h2>base/line-height</h2>
+<p>Line-height switches to value-based naming (matching font-size). The scale is extended at the upper end to support larger display sizes, and <code>base/line-height/55</code> (38px) is removed. A note at step 32 marks where the increment widens from 2px to 4px.</p>
+
+<h3>Proposed scale (19 tokens)</h3>
+<table>
+  <tr><th>Proposed token</th><th>Value (px)</th><th>Previous token</th><th>Status</th></tr>
+  <tr><td><code>base/line-height/16</code></td><td>16</td><td><code>base/line-height/0</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/18</code></td><td>18</td><td><code>base/line-height/5</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/20</code></td><td>20</td><td><code>base/line-height/10</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/22</code></td><td>22</td><td><code>base/line-height/15</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/24</code></td><td>24</td><td><code>base/line-height/20</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/26</code></td><td>26</td><td><code>base/line-height/25</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/28</code></td><td>28</td><td><code>base/line-height/30</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/30</code></td><td>30</td><td><code>base/line-height/35</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/32</code></td><td>32</td><td><code>base/line-height/40</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/36</code></td><td>36</td><td><code>base/line-height/50</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/40</code></td><td>40</td><td><code>base/line-height/60</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/44</code></td><td>44</td><td><code>base/line-height/70</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/48</code></td><td>48</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/52</code></td><td>52</td><td><code>base/line-height/90</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/56</code></td><td>56</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/60</code></td><td>60</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/68</code></td><td>68</td><td><code>base/line-height/130</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/72</code></td><td>72</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/80</code></td><td>80</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
+</table>
+
+<h3>Removed tokens (1 token)</h3>
+<table>
+  <tr><th>Removed token</th><th>Value</th><th>Reason</th></tr>
+  <tr><td><code>base/line-height/55</code></td><td>38px</td><td>Only referenced by Mx Tablet (2 refs). The 36px and 40px steps provide sufficient coverage at this range.</td></tr>
+</table>
+
+<div class="note"><strong>Step progression note:</strong> The line-height scale increments by 2px from 16 through 32, then widens to 4px increments from 32 upward. This matches the font-size scale&rsquo;s pattern and provides proportionally appropriate spacing as sizes increase.</div>
 
 </div>
 <script>

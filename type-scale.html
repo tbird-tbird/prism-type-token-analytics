@@ -273,15 +273,9 @@ document.getElementById('fontToggle').addEventListener('click', function(e) {
 
 function alignSlider() {
   var dft = document.getElementById('displayFontToggle');
-  var infoRow = document.querySelector('.info-row');
-  if (!dft || !infoRow) return;
-  var dftLeft = dft.getBoundingClientRect().left;
-  var rowLeft = infoRow.getBoundingClientRect().left;
-  var rowRight = infoRow.getBoundingClientRect().right;
-  var sliderEl = document.getElementById('merchantSlider');
-  var labelW = sliderEl.querySelector('.slider-label').offsetWidth + 12;
-  sliderEl.style.marginLeft = (dftLeft - rowLeft - labelW) + 'px';
-  sliderEl.querySelector('.slider-wrap').style.width = (rowRight - dftLeft) + 'px';
+  if (!dft) return;
+  var wrap = document.querySelector('.merchant-slider .slider-wrap');
+  wrap.style.width = dft.offsetWidth + 'px';
 }
 
 function positionBucketValue() {

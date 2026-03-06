@@ -323,33 +323,36 @@ function alignSlider() {
   document.getElementById('sliderTrack').style.top = 'calc(' + centerY + ' - 1px)';
 }
 
-function positionBucketValue() {
+function positionBucketValue(snapVal) {
   var slider = document.getElementById('bucketSlider');
   var valEl = document.getElementById('bucketValue');
   var min = parseFloat(slider.min);
   var max = parseFloat(slider.max);
-  var val = parseFloat(slider.value);
+  var val = snapVal !== undefined ? snapVal : Math.round(parseFloat(slider.value));
   var pct = (val - min) / (max - min);
   var thumbW = 14;
   var sliderW = slider.offsetWidth;
   var left = thumbW / 2 + pct * (sliderW - thumbW);
   valEl.style.left = left + 'px';
-  valEl.textContent = Math.round(val);
+  valEl.textContent = val;
 }
 
 function updateSlider() { alignSlider(); positionBucketValue(); }
 
 var bucketSlider = document.getElementById('bucketSlider');
 var bucketValueEl = document.getElementById('bucketValue');
+var lastSnapped = 1;
 
 bucketSlider.addEventListener('input', function() {
   var val = parseFloat(this.value);
   var nearest = Math.round(val);
   var dist = Math.abs(val - nearest);
   var opacity = 1 - dist * 2;
-  bucketValueEl.textContent = nearest;
   bucketValueEl.style.opacity = Math.max(0, opacity);
-  positionBucketValue();
+  if (nearest !== lastSnapped) {
+    lastSnapped = nearest;
+    positionBucketValue(nearest);
+  }
 });
 
 function snapSlider() {
@@ -357,8 +360,9 @@ function snapSlider() {
   var max = parseInt(bucketSlider.max);
   snapped = Math.max(1, Math.min(max, snapped));
   bucketSlider.value = snapped;
+  lastSnapped = snapped;
   bucketValueEl.style.opacity = 1;
-  positionBucketValue();
+  positionBucketValue(snapped);
   renderScale(currentScale);
 }
 bucketSlider.addEventListener('mouseup', snapSlider);

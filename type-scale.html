@@ -66,8 +66,9 @@
   .scale-toggle.disabled { opacity: 0.35; pointer-events: none; }
 
   .info-row { display: flex; align-items: center; margin-bottom: 28px; }
-  .scale-info { display: flex; gap: 24px; font-size: 13px; color: var(--muted); }
+  .scale-info { display: flex; gap: 24px; font-size: 13px; color: var(--muted); flex-shrink: 0; }
   .scale-info .count { font-weight: 600; color: var(--text); }
+  .scale-info .step-group { display: inline-block; min-width: 70px; }
 
   .scale-list { list-style: none; }
   .scale-item { display: flex; align-items: center; gap: 24px; padding: 16px 0; border-bottom: 1px solid #f3f4f6; transition: all 0.3s ease; }
@@ -146,7 +147,7 @@
 
 <div class="info-row">
   <div class="scale-info" id="scaleInfo">
-    <span><span class="count" id="stepCount">12</span> steps</span>
+    <span class="step-group"><span class="count" id="stepCount">12</span> steps</span>
     <span>Range: <span class="count" id="scaleRange">12px – 72px</span></span>
   </div>
   <div class="merchant-slider" id="merchantSlider">

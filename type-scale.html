@@ -83,7 +83,7 @@
   .merchant-slider { display: none; align-items: center; gap: 12px; margin-left: auto; }
   .merchant-slider.visible { display: flex; }
   .merchant-slider .slider-label { font-size: 13px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
-  .merchant-slider .slider-wrap { position: relative; width: 240px; }
+  .merchant-slider .slider-wrap { position: relative; }
   .merchant-slider .slider-value { position: absolute; top: -18px; font-size: 13px; font-weight: 600; color: var(--text); line-height: 1; transform: translateX(-50%); pointer-events: none; }
   .merchant-slider input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: var(--border); border-radius: 1px; outline: none; cursor: pointer; margin: 0; }
   .merchant-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #e5e5e5; border: none; box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 1px 3px rgba(0,0,0,0.3); cursor: pointer; transition: box-shadow 0.15s ease; }
@@ -246,7 +246,7 @@ function updateDisplayToggleState() {
   el.classList.toggle('disabled', currentScale === 'foundation');
   var sliderVisible = currentScale === 'merchant' || currentScale === 'courier';
   document.getElementById('merchantSlider').classList.toggle('visible', sliderVisible);
-  if (sliderVisible) setTimeout(positionBucketValue, 0);
+  if (sliderVisible) setTimeout(updateSlider, 0);
 }
 
 document.getElementById('scaleToggle').addEventListener('click', function(e) {
@@ -271,6 +271,19 @@ document.getElementById('fontToggle').addEventListener('click', function(e) {
   renderScale(currentScale);
 });
 
+function alignSlider() {
+  var dft = document.getElementById('displayFontToggle');
+  var infoRow = document.querySelector('.info-row');
+  if (!dft || !infoRow) return;
+  var dftLeft = dft.getBoundingClientRect().left;
+  var rowLeft = infoRow.getBoundingClientRect().left;
+  var rowRight = infoRow.getBoundingClientRect().right;
+  var sliderEl = document.getElementById('merchantSlider');
+  var labelW = sliderEl.querySelector('.slider-label').offsetWidth + 12;
+  sliderEl.style.marginLeft = (dftLeft - rowLeft - labelW) + 'px';
+  sliderEl.querySelector('.slider-wrap').style.width = (rowRight - dftLeft) + 'px';
+}
+
 function positionBucketValue() {
   var slider = document.getElementById('bucketSlider');
   var valEl = document.getElementById('bucketValue');
@@ -284,9 +297,11 @@ function positionBucketValue() {
   valEl.style.left = left + 'px';
   valEl.textContent = val;
 }
+
+function updateSlider() { alignSlider(); positionBucketValue(); }
 document.getElementById('bucketSlider').addEventListener('input', positionBucketValue);
-window.addEventListener('resize', positionBucketValue);
-setTimeout(positionBucketValue, 0);
+window.addEventListener('resize', updateSlider);
+setTimeout(updateSlider, 0);
 
 document.getElementById('displayFontToggle').addEventListener('click', function(e) {
   var btn = e.target.closest('button');

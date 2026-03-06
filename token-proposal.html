@@ -114,9 +114,9 @@
 
 <div class="stat-grid">
   <div class="stat-card"><div class="value">57</div><div class="label">Current Tokens</div></div>
-  <div class="stat-card"><div class="value">56</div><div class="label">Proposed Tokens</div></div>
-  <div class="stat-card green"><div class="value">+11</div><div class="label">Tokens Added</div></div>
-  <div class="stat-card red"><div class="value">&minus;12</div><div class="label">Tokens Removed</div></div>
+  <div class="stat-card"><div class="value">57</div><div class="label">Proposed Tokens</div></div>
+  <div class="stat-card green"><div class="value">+13</div><div class="label">Tokens Added</div></div>
+  <div class="stat-card red"><div class="value">&minus;13</div><div class="label">Tokens Removed</div></div>
 </div>
 
 <div class="note-blue"><strong>Key architectural change:</strong> Font-size and line-height tokens switch from an index-based naming system (e.g., <code>base/font-size/25</code> = 18px) to a value-based system (e.g., <code>base/font-size/18</code> = 18). This makes token names more intuitive, reduces the chance of errors, and ensures abstraction happens at the usage layer rather than the base layer.</div>
@@ -126,8 +126,8 @@
 <table>
   <tr><th>Property</th><th>Current</th><th>Proposed</th><th>Net change</th><th>Key changes</th></tr>
   <tr>
-    <td><strong>font-family</strong></td><td>2 tokens</td><td>5 tokens</td><td style="color:#16a34a">+3</td>
-    <td>Renamed <code>brand</code> to per-font tokens (<code>dd-norms</code>, <code>omnes</code>, <code>stratos</code>); added <code>mono</code></td>
+    <td><strong>font-family</strong></td><td>2 tokens</td><td>6 tokens</td><td style="color:#16a34a">+4</td>
+    <td>Replaced <code>default</code> and <code>brand</code> with per-font tokens (<code>sf-pro</code>, <code>inter</code>, <code>dd-norms</code>, <code>omnes</code>, <code>stratos</code>); added <code>mono</code></td>
   </tr>
   <tr>
     <td><strong>font-weight</strong></td><td>5 tokens</td><td>6 tokens</td><td style="color:#16a34a">+1</td>
@@ -149,21 +149,33 @@
 
 <!-- ==================== FONT FAMILY ==================== -->
 <h2>base/font-family</h2>
-<p><code>base/font-family/brand</code> is renamed to individual per-font tokens — one for each brand typeface. This keeps base tokens as pure, factual named constants and moves brand intent to the usage/semantic layer, where a token like <code>font-family/display</code> can reference whichever base font is appropriate per brand. A monospaced font-family token is also added to support code and tabular content.</p>
+<p>Both existing tokens (<code>default</code> and <code>brand</code>) are replaced with individual per-font tokens, one for each typeface. This ensures no theming or brand intent exists at the base layer — every token is a pure named constant. Usage/semantic tokens (e.g., <code>font-family/body</code>, <code>font-family/display</code>) are then responsible for referencing the appropriate base font per brand and platform. A monospaced font-family token is also added to support code and tabular content.</p>
 
 <table>
   <tr><th>Token</th><th>Value</th><th>Description</th><th>Status</th></tr>
   <tr>
     <td><code>base/font-family/default</code></td>
     <td>System (SF Pro / Inter)</td>
-    <td>Default system fonts for consistent, performance-optimised typographic foundation</td>
-    <td><span class="tag tag-unchanged">Unchanged</span></td>
+    <td>—</td>
+    <td><span class="tag tag-removed">Removed</span></td>
   </tr>
   <tr>
     <td><code>base/font-family/brand</code></td>
     <td>DD Norms / Omnes / Stratos</td>
     <td>—</td>
     <td><span class="tag tag-removed">Removed</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/sf-pro</code></td>
+    <td>SF Pro</td>
+    <td>Apple system typeface; default for iOS and macOS surfaces</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/inter</code></td>
+    <td>Inter</td>
+    <td>Default typeface for web and Android surfaces</td>
+    <td><span class="tag tag-added">Added</span></td>
   </tr>
   <tr>
     <td><code>base/font-family/dd-norms</code></td>

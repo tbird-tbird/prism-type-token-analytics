@@ -334,7 +334,7 @@ function positionBucketValue() {
   var sliderW = slider.offsetWidth;
   var left = thumbW / 2 + pct * (sliderW - thumbW);
   valEl.style.left = left + 'px';
-  valEl.textContent = val;
+  valEl.textContent = Math.round(val);
 }
 
 function updateSlider() { alignSlider(); positionBucketValue(); }

@@ -56,8 +56,8 @@
   h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
   .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
 
-  .toggle-row { display: flex; align-items: center; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
-  .font-toggles { display: flex; align-items: center; gap: 12px; }
+  .toggle-row { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .font-toggles { display: flex; align-items: center; gap: 12px; margin-left: auto; }
   .scale-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .scale-toggle button { padding: 10px 20px; font-size: 13px; font-weight: 500; font-family: inherit; border: none; background: #fff; color: var(--muted); cursor: pointer; transition: all 0.15s ease; border-right: 1px solid var(--border); }
   .scale-toggle button:last-child { border-right: none; }
@@ -65,7 +65,8 @@
   .scale-toggle button.active, .scale-toggle button.active:hover { background: var(--text); color: #fff; }
   .scale-toggle.disabled { opacity: 0.35; pointer-events: none; }
 
-  .scale-info { display: flex; gap: 24px; margin-bottom: 28px; font-size: 13px; color: var(--muted); }
+  .info-row { display: flex; align-items: center; margin-bottom: 28px; }
+  .scale-info { display: flex; gap: 24px; font-size: 13px; color: var(--muted); }
   .scale-info .count { font-weight: 600; color: var(--text); }
 
   .scale-list { list-style: none; }
@@ -79,13 +80,11 @@
   .scale-px.flagged { color: #dc2626; }
   .scale-section { padding: 20px 0 8px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); border-bottom: 1px solid var(--border); }
   .scale-section:first-child { padding-top: 0; }
-  .font-toggles-col { display: flex; flex-direction: column; align-items: flex-end; margin-left: auto; gap: 0; }
-  .merchant-slider { display: none; flex-direction: column; width: 100%; padding-top: 12px; }
+  .merchant-slider { display: none; align-items: center; gap: 12px; margin-left: auto; }
   .merchant-slider.visible { display: flex; }
-  .merchant-slider .slider-track-row { display: flex; align-items: center; gap: 12px; width: 100%; }
   .merchant-slider .slider-label { font-size: 13px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
-  .merchant-slider .slider-wrap { flex: 1; position: relative; }
-  .merchant-slider .slider-value { position: absolute; top: -20px; font-size: 13px; font-weight: 600; color: var(--text); line-height: 1; transform: translateX(-50%); pointer-events: none; }
+  .merchant-slider .slider-wrap { position: relative; width: 240px; }
+  .merchant-slider .slider-value { position: absolute; top: -18px; font-size: 13px; font-weight: 600; color: var(--text); line-height: 1; transform: translateX(-50%); pointer-events: none; }
   .merchant-slider input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: var(--border); border-radius: 1px; outline: none; cursor: pointer; margin: 0; }
   .merchant-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #e5e5e5; border: none; box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 1px 3px rgba(0,0,0,0.3); cursor: pointer; transition: box-shadow 0.15s ease; }
   .merchant-slider input[type="range"]::-webkit-slider-thumb:hover { box-shadow: 0 0 0 1px rgba(255,255,255,0.2), 0 1px 6px rgba(0,0,0,0.4); }
@@ -132,33 +131,31 @@
     <button data-scale="courier">Courier</button>
     <button data-scale="merchant">Merchant</button>
   </div>
-  <div class="font-toggles-col">
-    <div class="font-toggles">
-      <div class="scale-toggle" id="fontToggle">
-        <button class="active" data-font="sfpro">SF Pro</button>
-        <button data-font="inter">Inter</button>
-      </div>
-      <div class="scale-toggle" id="displayFontToggle">
-        <button class="active" data-dfont="ddnorms">DD Norms</button>
-        <button data-dfont="omnes">Omnes</button>
-        <button data-dfont="stratos">Stratos</button>
-      </div>
+  <div class="font-toggles">
+    <div class="scale-toggle" id="fontToggle">
+      <button class="active" data-font="sfpro">SF Pro</button>
+      <button data-font="inter">Inter</button>
     </div>
-    <div class="merchant-slider" id="merchantSlider">
-      <div class="slider-track-row">
-        <span class="slider-label">size buckets</span>
-        <div class="slider-wrap">
-          <span class="slider-value" id="bucketValue">1</span>
-          <input type="range" id="bucketSlider" min="1" max="3" step="1" value="1">
-        </div>
-      </div>
+    <div class="scale-toggle" id="displayFontToggle">
+      <button class="active" data-dfont="ddnorms">DD Norms</button>
+      <button data-dfont="omnes">Omnes</button>
+      <button data-dfont="stratos">Stratos</button>
     </div>
   </div>
 </div>
 
-<div class="scale-info" id="scaleInfo">
-  <span><span class="count" id="stepCount">12</span> steps</span>
-  <span>Range: <span class="count" id="scaleRange">12px – 72px</span></span>
+<div class="info-row">
+  <div class="scale-info" id="scaleInfo">
+    <span><span class="count" id="stepCount">12</span> steps</span>
+    <span>Range: <span class="count" id="scaleRange">12px – 72px</span></span>
+  </div>
+  <div class="merchant-slider" id="merchantSlider">
+    <span class="slider-label">size buckets</span>
+    <div class="slider-wrap">
+      <span class="slider-value" id="bucketValue">1</span>
+      <input type="range" id="bucketSlider" min="1" max="3" step="1" value="1">
+    </div>
+  </div>
 </div>
 
 <ul class="scale-list" id="scaleList"></ul>

@@ -246,7 +246,14 @@ function updateDisplayToggleState() {
   el.classList.toggle('disabled', currentScale === 'foundation');
   var sliderVisible = currentScale === 'merchant' || currentScale === 'courier';
   document.getElementById('merchantSlider').classList.toggle('visible', sliderVisible);
-  if (sliderVisible) setTimeout(updateSlider, 0);
+  if (sliderVisible) {
+    var maxBuckets = currentScale === 'courier' ? 2 : 3;
+    var slider = document.getElementById('bucketSlider');
+    slider.max = maxBuckets;
+    if (parseInt(slider.value) > maxBuckets) slider.value = maxBuckets;
+    document.getElementById('bucketValue').textContent = slider.value;
+    setTimeout(updateSlider, 0);
+  }
 }
 
 document.getElementById('scaleToggle').addEventListener('click', function(e) {

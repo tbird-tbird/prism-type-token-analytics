@@ -74,7 +74,7 @@
   [data-theme="dark"] .tag-modified { background: #422006; color: #fde68a; }
   [data-theme="dark"] .tag-renamed { background: #1e3a5f; color: #93c5fd; }
   [data-theme="dark"] .tag-unchanged { background: #1e1e1e; color: #888; }
-  td:has(.tag) { text-align: right; }
+  td:has(.tag) { text-align: right; white-space: nowrap; width: 1%; }
   .change-row td { font-size: 13px; }
   .exec-summary { border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px; margin-bottom: 40px; }
   .exec-summary .exec-lead { font-size: 16px; line-height: 1.6; margin-bottom: 24px; color: var(--text); }
@@ -182,7 +182,7 @@
 <p>Both existing tokens (<code>default</code> and <code>brand</code>) are replaced with individual per-font tokens, one for each typeface. This ensures no theming or brand intent exists at the base layer — every token is a pure named constant. Usage/semantic tokens (e.g., <code>font-family/body</code>, <code>font-family/display</code>) are then responsible for referencing the appropriate base font per brand and platform. A monospaced font-family token is also added to support code and tabular content.</p>
 
 <table>
-  <tr><th>Token</th><th>Value</th><th>Description</th><th>Status</th></tr>
+  <tr><th>Token</th><th>Value</th><th>Description</th><th style="white-space:nowrap;width:1%">Status</th></tr>
   <tr>
     <td><code>base/font-family/default</code></td>
     <td>System (SF Pro / Inter)</td>
@@ -240,7 +240,7 @@
 <div class="note"><strong>Why numeric values?</strong> The same numeric weight (e.g., 800) may be labelled differently across fonts &mdash; "Extra Bold" in Inter, "Heavy" in SF Pro. Numeric values are unambiguous and align with the <a href="https://www.designtokens.org/tr/2025.10/format/#font-weight" style="color: inherit;">W3C Design Tokens spec</a>, which treats strings as aliases for numeric weights.</div>
 
 <table>
-  <tr><th>Token</th><th>Proposed value</th><th>Previous value</th><th>Description</th><th>Status</th></tr>
+  <tr><th>Token</th><th>Proposed value</th><th>Previous value</th><th>Description</th><th style="white-space:nowrap;width:1%">Status</th></tr>
   <tr>
     <td><code>base/font-weight/light</code></td>
     <td class="val-new">300</td>
@@ -293,7 +293,7 @@
 
 <h3>Proposed scale (17 tokens)</h3>
 <table>
-  <tr><th>Proposed token</th><th>Value (px)</th><th>Previous token</th><th>Status</th></tr>
+  <tr><th>Proposed token</th><th>Value (px)</th><th>Previous token</th><th style="white-space:nowrap;width:1%">Status</th></tr>
   <tr><td><code>base/font-size/10</code></td><td>10</td><td><code>base/font-size/5</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
   <tr><td><code>base/font-size/12</code></td><td>12</td><td><code>base/font-size/10</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
   <tr><td><code>base/font-size/14</code></td><td>14</td><td><code>base/font-size/15</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
@@ -315,7 +315,7 @@
 
 <h3>Removed tokens (11 tokens)</h3>
 <table>
-  <tr><th>Removed token</th><th>Value</th><th>Reason</th><th>Status</th></tr>
+  <tr><th>Removed token</th><th>Value</th><th>Reason</th><th style="white-space:nowrap;width:1%">Status</th></tr>
   <tr><td><code>base/font-size/190</code></td><td>84px</td><td>Only referenced by 1 mode (Merchant POS Plus); oversized for current needs</td><td><span class="tag tag-removed">Removed</span></td></tr>
   <tr><td><code>base/font-size/xx-small</code></td><td>&rarr; step 5</td><td rowspan="10" style="vertical-align:middle">Semantic aliases with zero references across all 32 modes. Usage tokens reference numeric steps directly, making this layer redundant.</td><td><span class="tag tag-removed">Removed</span></td></tr>
   <tr><td><code>base/font-size/x-small</code></td><td>&rarr; step 10</td><td><span class="tag tag-removed">Removed</span></td></tr>
@@ -334,7 +334,7 @@
 <p>The letter-spacing scale has been revised for better distribution. Key changes: added a <code>&minus;0.1</code> value between <code>&minus;0.2</code> and <code>0</code>, changed <code>&minus;0.5</code> to <code>&minus;0.6</code> for more even spacing, and changed <code>&minus;0.01</code> to <code>0</code> (effectively no letter-spacing). Letter-spacing retains index-based naming as the values are not intuitive enough to serve as names.</p>
 
 <table>
-  <tr><th>Token</th><th>Proposed value</th><th>Previous value</th><th>Status</th></tr>
+  <tr><th>Token</th><th>Proposed value</th><th>Previous value</th><th style="white-space:nowrap;width:1%">Status</th></tr>
   <tr>
     <td><code>base/letter-spacing/0</code></td><td>&minus;2</td><td>&minus;2</td>
     <td><span class="tag tag-unchanged">Unchanged</span></td>
@@ -395,7 +395,7 @@
 
 <h3>Proposed scale (19 tokens)</h3>
 <table>
-  <tr><th>Proposed token</th><th>Value (px)</th><th>Previous token</th><th>Status</th></tr>
+  <tr><th>Proposed token</th><th>Value (px)</th><th>Previous token</th><th style="white-space:nowrap;width:1%">Status</th></tr>
   <tr><td><code>base/line-height/16</code></td><td>16</td><td><code>base/line-height/0</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
   <tr><td><code>base/line-height/18</code></td><td>18</td><td><code>base/line-height/5</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
   <tr><td><code>base/line-height/20</code></td><td>20</td><td><code>base/line-height/10</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>

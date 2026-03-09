@@ -145,9 +145,9 @@
 
 <div class="stat-grid">
   <div class="stat-card"><div class="value">57</div><div class="label">Current Tokens</div></div>
-  <div class="stat-card"><div class="value">59</div><div class="label">Proposed Tokens</div></div>
+  <div class="stat-card"><div class="value">60</div><div class="label">Proposed Tokens</div></div>
   <div class="stat-card green"><div class="value">+15</div><div class="label">Tokens Added</div></div>
-  <div class="stat-card red"><div class="value">&minus;13</div><div class="label">Tokens Removed</div></div>
+  <div class="stat-card red"><div class="value">&minus;12</div><div class="label">Tokens Removed</div></div>
 </div>
 
 <div class="note-blue"><strong>Key architectural change:</strong> Font-size and line-height tokens switch from an index-based naming system (e.g., <code>base/font-size/25</code> = 18px) to a value-based system (e.g., <code>base/font-size/18</code> = 18). This makes token names more intuitive, reduces the chance of errors, and ensures abstraction happens at the usage layer rather than the base layer.</div>
@@ -169,7 +169,7 @@
     <td>Removed 10 unused semantic aliases + 1 numeric; switched to value-based naming</td>
   </tr>
   <tr>
-    <td><strong>letter-spacing</strong></td><td>7 tokens</td><td>8 tokens</td><td style="color:#16a34a">+1</td>
+    <td><strong>letter-spacing</strong></td><td>7 tokens</td><td>9 tokens</td><td style="color:#16a34a">+2</td>
     <td>Switched to value-based naming (<code>n0p8</code> = &minus;0.8); revised scale values; added <code>n0p2</code> and <code>0</code></td>
   </tr>
   <tr>
@@ -314,7 +314,7 @@
 
 <!-- ==================== LETTER SPACING ==================== -->
 <h2>base/letter-spacing</h2>
-<p>The letter-spacing scale has been revised for better distribution and switches to value-based naming, consistent with font-size and line-height. Token names use the <code>n</code> prefix for negative values and <code>p</code> in place of the decimal point (e.g. <code>n0p8</code> = &minus;0.8). Key value changes: <code>&minus;0.5</code> &rarr; <code>&minus;0.6</code>; added <code>&minus;0.2</code> and <code>0</code>.</p>
+<p>The letter-spacing scale has been revised for better distribution and switches to value-based naming, consistent with font-size and line-height. Token names use the <code>n</code> prefix for negative values and <code>p</code> in place of the decimal point (e.g. <code>n0p8</code> = &minus;0.8). Key value changes: <code>&minus;0.5</code> &rarr; <code>&minus;0.6</code>, <code>&minus;0.01</code> &rarr; <code>&minus;0.1</code>; added <code>&minus;0.2</code> and <code>0</code>.</p>
 
 <table>
   <tr><th>Proposed token</th><th>Value</th><th>Previous token</th><th>Previous value</th><th>Status</th></tr>
@@ -354,13 +354,18 @@
     <td><span class="tag tag-added">Added</span></td>
   </tr>
   <tr>
+    <td><code>base/letter-spacing/n0p1</code></td><td>&minus;0.1</td>
+    <td><code>base/letter-spacing/70</code></td><td><span class="val-old">&minus;0.01</span></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
     <td><code>base/letter-spacing/0</code></td><td>0</td>
     <td>&mdash;</td><td>&mdash;</td>
     <td><span class="tag tag-added">Added</span></td>
   </tr>
 </table>
 
-<div class="note"><strong>Scale distribution:</strong> The current scale has uneven gaps: &minus;2, &minus;0.8, &minus;0.5, &minus;0.4, &minus;0.3, &minus;0.2, &minus;0.01. The proposed scale fills the gaps more evenly: &minus;2, &minus;1, &minus;0.8, &minus;0.6, &minus;0.4, &minus;0.3, &minus;0.2, 0. This provides finer control in the &minus;0.4 to 0 range where most body text letter-spacing lives.</div>
+<div class="note"><strong>Scale distribution:</strong> The current scale has uneven gaps: &minus;2, &minus;0.8, &minus;0.5, &minus;0.4, &minus;0.3, &minus;0.2, &minus;0.01. The proposed scale fills the gaps more evenly: &minus;2, &minus;1, &minus;0.8, &minus;0.6, &minus;0.4, &minus;0.3, &minus;0.2, &minus;0.1, 0. This provides finer control in the &minus;0.2 to 0 range where most body text letter-spacing lives.</div>
 
 <!-- ==================== LINE HEIGHT ==================== -->
 <h2>base/line-height</h2>

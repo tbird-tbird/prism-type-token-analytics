@@ -4,34 +4,29 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Token Proposal — Type Token Architecture</title>
+<title>Token Proposal — Prism Base Type Tokens</title>
 <style>
   :root { --bg: #fff; --border: #e5e5e5; --text: #1a1a1a; --muted: #6b7280; --accent: #2563eb; }
   [data-theme="dark"] { --bg: #0f0f0f; --border: #2a2a2a; --text: #e5e5e5; --muted: #888; --accent: #60a5fa; }
   [data-theme="dark"] .nav-dropdown-menu { background: #1a1a1a; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
   [data-theme="dark"] .nav-dropdown-menu a:hover { background: #222; }
-  [data-theme="dark"] .layer-box { background: #141414; border-color: #2a2a2a; }
-  [data-theme="dark"] .layer-box.flagged { background: #180808; border-left-color: #ef4444; }
-  [data-theme="dark"] .badge-private { background: #2a2a2a; color: #888; }
-  [data-theme="dark"] .badge-public { background: #1e3a5f; color: #93c5fd; }
-  [data-theme="dark"] .badge-new { background: #14532d; color: #86efac; }
-  [data-theme="dark"] .chip { background: #1e1e1e; color: #9ca3af; }
-  [data-theme="dark"] .chip.flagged { background: #2a0808; color: #f87171; border-color: #7f1d1d; }
-  [data-theme="dark"] .issue-item { border-bottom-color: #1e1e1e; }
-  [data-theme="dark"] .icon-x { background: #450a0a; color: #f87171; }
-  [data-theme="dark"] .icon-check { background: #052e16; color: #86efac; }
-  [data-theme="dark"] .info-card { background: #141414; border-color: #2a2a2a; }
-  [data-theme="dark"] .col-count.proposed-count { background: #1e3a5f; color: #93c5fd; }
-
+  [data-theme="dark"] td { border-bottom-color: #1e1e1e; }
+  [data-theme="dark"] tr:hover td { background: #161616; }
+  [data-theme="dark"] code { background: #1e1e1e; color: #ccc; }
+  [data-theme="dark"] .note { background: #191400; border-left-color: #b45309; }
+  [data-theme="dark"] .note-blue { background: #0c1524; border-left-color: #2563eb; }
+  [data-theme="dark"] .note-green { background: #071a0e; border-left-color: #16a34a; }
+  [data-theme="dark"] .stat-card { background: #141414; border-color: var(--border); }
+  [data-theme="dark"] .change-added { background: #071a0e; }
+  [data-theme="dark"] .change-removed { background: #1a0808; }
+  [data-theme="dark"] .change-modified { background: #191400; }
   .theme-toggle { margin-left: auto; display: flex; align-items: center; }
   .theme-toggle button { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; padding: 0; }
   .theme-toggle button:hover { color: var(--text); border-color: var(--text); }
   .theme-toggle svg { width: 18px; height: 18px; }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
   .container { max-width: 1100px; margin: 0 auto; padding: 0 24px 48px; }
-
   nav.top-nav { border-bottom: 1px solid var(--border); margin-bottom: 40px; padding: 14px 0; display: flex; align-items: baseline; gap: 24px; font-size: 13px; position: relative; }
   nav.top-nav a { color: var(--muted); text-decoration: none; font-weight: 500; }
   nav.top-nav a:hover { color: var(--text); }
@@ -46,62 +41,50 @@
   .nav-dropdown.open .nav-dropdown-menu { display: block; }
   .nav-dropdown-menu a { display: block; padding: 8px 16px; color: var(--text); font-size: 14px; font-weight: 400; }
   .nav-dropdown-menu a:hover { background: #f9fafb; }
-
   h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
   .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
   h2 { font-size: 20px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-
-  /* Column headers */
-  .proposal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 8px; }
-  .col-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-  .col-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-  .col-count { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
-  .col-count.current-count { background: #f3f4f6; color: var(--muted); }
-  .col-count.proposed-count { background: #dbeafe; color: #1e40af; }
-
-  /* Layer diagram */
-  .layer-stack { display: flex; flex-direction: column; }
-  .layer-box { border: 1px solid var(--border); border-left: 4px solid var(--border); border-radius: 0 8px 8px 0; padding: 14px 16px; background: var(--bg); }
-  .layer-box.private { border-left-color: #9ca3af; }
-  .layer-box.public { border-left-color: #2563eb; }
-  .layer-box.new { border-left-color: #16a34a; }
-  .layer-box.flagged { border-left-color: #ef4444; background: #fff8f8; }
-  .layer-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 5px; }
-  .layer-name { font-size: 14px; font-weight: 600; }
-  .layer-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; margin-left: 8px; margin-top: 1px; }
-  .badge-private { background: #f3f4f6; color: #6b7280; }
-  .badge-public { background: #dbeafe; color: #1e40af; }
-  .badge-new { background: #dcfce7; color: #166534; }
-  .layer-desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
-  .layer-chips { display: flex; flex-wrap: wrap; gap: 5px; }
-  .chip { font-size: 11px; background: #f3f4f6; color: #4b5563; padding: 2px 8px; border-radius: 3px; border: 1px solid transparent; }
-  .chip.flagged { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
-
-  .layer-arrow { display: flex; align-items: center; justify-content: center; height: 22px; color: var(--muted); font-size: 14px; }
-  .layer-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
-  /* Issues & solutions */
-  .issues-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
-  .issues-col h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
-  .issue-item { display: flex; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); }
-  .issue-item:last-child { border-bottom: none; }
-  .issue-icon { flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; margin-top: 2px; }
-  .icon-x { background: #fef2f2; color: #dc2626; }
-  .icon-check { background: #f0fdf4; color: #16a34a; }
-  .issue-text strong { display: block; font-size: 13px; margin-bottom: 2px; }
-  .issue-text span { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
-  /* Info card */
-  .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
-  .info-card { border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; }
-  .info-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-  .info-card .card-body { font-size: 13px; color: var(--muted); margin-bottom: 6px; line-height: 1.5; }
-  .info-card .card-example { font-size: 13px; color: var(--muted); margin-bottom: 16px; font-style: italic; }
-  .info-card .rules-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px; }
-  .info-card ol { margin: 0 0 0 18px; }
-  .info-card ol li { font-size: 13px; color: var(--muted); margin-bottom: 6px; line-height: 1.5; }
-  .note-blue { padding: 12px 16px; background: #eff6ff; border-left: 3px solid #2563eb; border-radius: 0 8px 8px 0; font-size: 13px; margin: 0 0 32px; line-height: 1.6; color: var(--text); }
-  [data-theme="dark"] .note-blue { background: #0c1524; border-left-color: #2563eb; }
+  h3 { font-size: 16px; font-weight: 600; margin: 24px 0 12px; }
+  p { margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px; }
+  th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 13px; color: var(--text); }
+  td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbfc; }
+  code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+  .note { padding: 12px 16px; background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 0 8px 8px 0; font-size: 13px; margin: 16px 0; }
+  .note-blue { padding: 12px 16px; background: #eff6ff; border-left: 3px solid #2563eb; border-radius: 0 8px 8px 0; font-size: 13px; margin: 16px 0; }
+  .note-green { padding: 12px 16px; background: #f0fdf4; border-left: 3px solid #16a34a; border-radius: 0 8px 8px 0; font-size: 13px; margin: 16px 0; }
+  ul, ol { margin: 0 0 16px 24px; }
+  li { margin-bottom: 6px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .stat-card .value { font-size: 28px; font-weight: 700; color: var(--accent); }
+  .stat-card .label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .stat-card.green .value { color: #16a34a; }
+  .stat-card.red .value { color: #dc2626; }
+  .stat-card.orange .value { color: #d97706; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+  .tag-added { background: #dcfce7; color: #166534; }
+  .tag-removed { background: #fef2f2; color: #991b1b; }
+  .tag-modified { background: #fefce8; color: #854d0e; }
+  .tag-renamed { background: #eff6ff; color: #1e40af; }
+  .tag-unchanged { background: #f3f4f6; color: #6b7280; }
+  [data-theme="dark"] .tag-added { background: #14532d; color: #86efac; }
+  [data-theme="dark"] .tag-removed { background: #450a0a; color: #fca5a5; }
+  [data-theme="dark"] .tag-modified { background: #422006; color: #fde68a; }
+  [data-theme="dark"] .tag-renamed { background: #1e3a5f; color: #93c5fd; }
+  [data-theme="dark"] .tag-unchanged { background: #1e1e1e; color: #888; }
+  .change-row td { font-size: 13px; }
+  .val-old { color: var(--muted); text-decoration: line-through; }
+  .val-new { font-weight: 600; }
+  .arrow { color: var(--muted); margin: 0 4px; }
+  .summary-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 8px; }
+  .summary-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .summary-card .card-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 6px; }
+  .summary-card .card-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .summary-card .card-body { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  [data-theme="dark"] .summary-card { background: #141414; }
 </style>
 <script>(function(){var t=localStorage.getItem("prism-theme")||"light";document.documentElement.setAttribute("data-theme",t)})()</script>
 </head>
@@ -126,7 +109,7 @@
   <div class="nav-dropdown" id="proposalDropdown">
     <button class="nav-dropdown-toggle current" onclick="toggleDropdown('proposalDropdown')">Token Proposal <span class="caret">&#9662;</span></button>
     <div class="nav-dropdown-menu">
-      <a href="token-proposal.html">Token Proposal</a>
+      <a href="token-proposal-overview.html">Token Proposal</a>
       <a href="token-proposal.html">Base Tokens</a>
       <a href="token-proposal-usage.html">Usage Tokens</a>
     </div>
@@ -138,297 +121,294 @@
   </div>
 </nav>
 
-<h1>Prism Type Token Architecture Proposal</h1>
-<p class="subtitle">Evolving from a 3-layer system to a 5-layer architecture by introducing a dedicated Base Brand primitive for typefaces and a Composite layer for Type Styles between Usage and Component.</p>
+<h1>Prism Base Type Token Proposal</h1>
+<p class="subtitle">Proposed changes to the base type token architecture &middot; Source: Prism Base (<code>Mp8dBTFCjNZsLGrG4A5O9V</code>)</p>
 
-<div class="note-blue"><strong>Note on the Composite layer:</strong> Composite Type tokens (Type Styles) already exist within the Usage layer today, sitting alongside primitive usage tokens. This proposal pulls them out into their own dedicated Composite layer — keeping things tidy and mirroring the same structural pattern being proposed for color tokens.</div>
-
-<h2>Architecture comparison</h2>
-<div class="proposal-grid">
-
-  <!-- CURRENT -->
-  <div>
-    <div class="col-header">
-      <span class="col-label">Current</span>
-      <span class="col-count current-count">3 layers</span>
-    </div>
-    <div class="layer-stack">
-
-      <div class="layer-box private">
-        <div class="layer-header">
-          <span class="layer-name">Component</span>
-          <span class="layer-badge badge-private">Private</span>
-        </div>
-        <div class="layer-desc">Component-specific typography bindings consumed by UI. References Usage tokens directly.</div>
-        <div class="layer-chips">
-          <span class="chip">Button</span>
-          <span class="chip">Body</span>
-          <span class="chip">Label</span>
-          <span class="chip">Caption</span>
-          <span class="chip">Display</span>
-        </div>
-      </div>
-
-      <div class="layer-arrow">↓</div>
-
-      <div class="layer-box public">
-        <div class="layer-header">
-          <span class="layer-name">Usage</span>
-          <span class="layer-badge badge-public">Public</span>
-        </div>
-        <div class="layer-desc">Semantic type tokens and composite type styles mixed together. The only layer designers and engineers can access. Also holds font-family values that have no clear structural home.</div>
-        <div class="layer-chips">
-          <span class="chip">Font Size</span>
-          <span class="chip">Line Height</span>
-          <span class="chip">Letter Spacing</span>
-          <span class="chip">Font Weight</span>
-          <span class="chip flagged">Type Styles</span>
-          <span class="chip flagged">Font Family</span>
-        </div>
-      </div>
-
-      <div class="layer-arrow">↓</div>
-
-      <div class="layer-box flagged">
-        <div class="layer-header">
-          <span class="layer-name">Base</span>
-          <span class="layer-badge badge-private">Private</span>
-        </div>
-        <div class="layer-desc">Raw typographic primitives. Blocked from direct use. Contains numeric steps and a parallel set of unused semantic aliases — two naming systems in one bucket.</div>
-        <div class="layer-chips">
-          <span class="chip">font-size/25</span>
-          <span class="chip">line-height/15</span>
-          <span class="chip">letter-spacing/70</span>
-          <span class="chip">font-weight/bold</span>
-          <span class="chip flagged">xx-small</span>
-          <span class="chip flagged">x-small</span>
-          <span class="chip flagged">small</span>
-          <span class="chip flagged">+7 more</span>
-        </div>
-      </div>
-
-    </div>
+<h2>Executive Summary</h2>
+<div class="summary-card-grid">
+  <div class="summary-card">
+    <div class="card-eyebrow">Clarity</div>
+    <div class="card-title">Self-documenting tokens</div>
+    <div class="card-body">Token names now reflect their actual values, so designers and engineers can understand them at a glance — no lookup tables required.</div>
   </div>
-
-  <!-- PROPOSED -->
-  <div>
-    <div class="col-header">
-      <span class="col-label">Proposed</span>
-      <span class="col-count proposed-count">5 layers</span>
-    </div>
-    <div class="layer-stack">
-
-      <div class="layer-box private">
-        <div class="layer-header">
-          <span class="layer-name">Component</span>
-          <span class="layer-badge badge-private">Private</span>
-        </div>
-        <div class="layer-desc">Component-specific typography bindings. References Type Style or Usage tokens.</div>
-        <div class="layer-chips">
-          <span class="chip">Button</span>
-          <span class="chip">Body</span>
-          <span class="chip">Label</span>
-          <span class="chip">Caption</span>
-          <span class="chip">Display</span>
-        </div>
-      </div>
-
-      <div class="layer-arrow">↓</div>
-
-      <div class="layer-box new">
-        <div class="layer-header">
-          <span class="layer-name">Composite (Type Styles)</span>
-          <span class="layer-badge badge-new">New &middot; Public</span>
-        </div>
-        <div class="layer-desc">Composite Type tokens already live in Usage today. Pulling them into their own layer keeps primitive and composite tokens cleanly separated, and mirrors the Composite layer being introduced in the color token proposal.</div>
-        <div class="layer-chips">
-          <span class="chip">Display</span>
-          <span class="chip">Heading</span>
-          <span class="chip">Body</span>
-          <span class="chip">Label</span>
-          <span class="chip">Caption</span>
-        </div>
-      </div>
-
-      <div class="layer-arrow">↓</div>
-
-      <div class="layer-box public">
-        <div class="layer-header">
-          <span class="layer-name">Usage</span>
-          <span class="layer-badge badge-public">Public</span>
-        </div>
-        <div class="layer-desc">Semantic type tokens. References Base and Base Brand tokens. Font-family moves to its own dedicated layer.</div>
-        <div class="layer-chips">
-          <span class="chip">Font Size</span>
-          <span class="chip">Line Height</span>
-          <span class="chip">Letter Spacing</span>
-          <span class="chip">Font Weight</span>
-        </div>
-      </div>
-
-      <div class="layer-arrow">↓</div>
-
-      <div class="layer-split">
-        <div class="layer-box new">
-          <div class="layer-header">
-            <span class="layer-name">Base Brand</span>
-            <span class="layer-badge badge-new">New &middot; Public</span>
-          </div>
-          <div class="layer-desc">Brand-specific typefaces. Static identity values — not themeable per color mode.</div>
-          <div class="layer-chips">
-            <span class="chip">DD Norms</span>
-            <span class="chip">Omnes</span>
-            <span class="chip">Stratos</span>
-            <span class="chip">SF Pro</span>
-          </div>
-        </div>
-        <div class="layer-box private">
-          <div class="layer-header">
-            <span class="layer-name">Base</span>
-            <span class="layer-badge badge-private">Private</span>
-          </div>
-          <div class="layer-desc">Numeric typographic scale. Cleaned up — semantic aliases removed, unused steps deprecated.</div>
-          <div class="layer-chips">
-            <span class="chip">font-size</span>
-            <span class="chip">line-height</span>
-            <span class="chip">letter-spacing</span>
-            <span class="chip">font-weight</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
+  <div class="summary-card">
+    <div class="card-eyebrow">Precision</div>
+    <div class="card-title">One token per typeface</div>
+    <div class="card-body">Each brand and system font gets its own dedicated token, giving teams exact control over which typeface is used and where.</div>
   </div>
-
-</div>
-
-<h2>Known issues &amp; what this solves</h2>
-<div class="issues-grid">
-
-  <div class="issues-col">
-    <h3>Known issues</h3>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-x">✕</div>
-      <div class="issue-text">
-        <strong>Semantic aliases at Base are 100% unused.</strong>
-        <span>10 font-size aliases (xx-small → xxxxx-large) exist at the Base level but are never referenced by any token across all 32 modes. They duplicate naming that belongs at the Usage layer.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-x">✕</div>
-      <div class="issue-text">
-        <strong>17 of 57 base tokens (30%) are never referenced.</strong>
-        <span>Nearly a third of the base type token inventory is dead weight with no clear path to removal because layer ownership is ambiguous.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-x">✕</div>
-      <div class="issue-text">
-        <strong>No composite typography layer.</strong>
-        <span>Component tokens independently bundle font-size, line-height, letter-spacing, and font-weight — duplicating the same combinations across dozens of comp tokens with no shared definition.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-x">✕</div>
-      <div class="issue-text">
-        <strong>Font-family has no structural home.</strong>
-        <span>Brand typefaces are embedded in Usage alongside semantic scale values, with no distinction between identity-level choices and functional type decisions.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-x">✕</div>
-      <div class="issue-text">
-        <strong>Base is completely private.</strong>
-        <span>Even brand-critical typefaces that partners need to reference are inaccessible — forcing teams to hardcode values or misuse the Usage layer.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-x">✕</div>
-      <div class="issue-text">
-        <strong>Two naming conventions coexist in Base.</strong>
-        <span>Numeric steps (font-size/25) and semantic aliases (font-size/small) describe the same concept with no clear convention, creating confusion about which to reference.</span>
-      </div>
-    </div>
-
+  <div class="summary-card">
+    <div class="card-eyebrow">Consistency</div>
+    <div class="card-title">Standardised font weights</div>
+    <div class="card-body">Font weights now use universal numeric values, ensuring the same weight renders consistently across all platforms and tools.</div>
   </div>
-
-  <div class="issues-col">
-    <h3>What this solves</h3>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-check">✓</div>
-      <div class="issue-text">
-        <strong>One naming convention per layer.</strong>
-        <span>Semantic aliases are removed from Base. Numeric steps stay at Base, semantic names stay at Usage — one convention, one layer, no ambiguity.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-check">✓</div>
-      <div class="issue-text">
-        <strong>17 unused tokens can be deprecated with confidence.</strong>
-        <span>Clear layer responsibilities make the audit trail unambiguous. Tokens with no layer-appropriate consumers can be removed safely.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-check">✓</div>
-      <div class="issue-text">
-        <strong>Type Style layer eliminates duplication.</strong>
-        <span>Define a typography combination once at the Type Style layer. Component tokens reference it — changes propagate automatically across the system.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-check">✓</div>
-      <div class="issue-text">
-        <strong>Base Brand gives typefaces a dedicated, public home.</strong>
-        <span>Brand fonts are accessible to designers and engineers without conflating brand identity with functional semantic values at the Usage layer.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-check">✓</div>
-      <div class="issue-text">
-        <strong>Public/private boundaries are explicit and intentional.</strong>
-        <span>Base stays private. Base Brand and Type Style are public — a documented, architectural decision rather than an accident of implementation.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-check">✓</div>
-      <div class="issue-text">
-        <strong>Scale audits become simpler.</strong>
-        <span>A numeric-only Base with clean step coverage is easier to understand, document, and evolve — especially across 32 theme modes.</span>
-      </div>
-    </div>
-
-  </div>
-
-</div>
-
-<div class="bottom-grid">
-  <div></div>
-  <div class="info-card">
-    <h3>What is a Type Style token?</h3>
-    <p class="card-body">A composite token that bundles font-size, line-height, letter-spacing, and font-weight into a single reusable typography definition.</p>
-    <p class="card-example"><em>i.e. Display/Large, Heading/Medium, Body/Default, Label/Small</em></p>
-    <div class="rules-label">Rules</div>
-    <ol>
-      <li>Type Style tokens are public and can be referenced by designers and engineers</li>
-      <li>Type Style tokens reference Usage tokens — never Base directly</li>
-      <li>Component tokens should reference Type Style tokens rather than bundling properties individually</li>
-      <li>Changes to a Type Style token have a predictable, auditable blast radius</li>
-      <li>Type Style tokens are not brand-specific — brand differentiation lives in Base Brand</li>
-    </ol>
+  <div class="summary-card">
+    <div class="card-eyebrow">Hygiene</div>
+    <div class="card-title">Retiring unused tokens</div>
+    <div class="card-body">10 tokens with zero usage across all 32 product modes have been removed, keeping the system lean and easier to maintain.</div>
   </div>
 </div>
+
+<h2>Overview</h2>
+
+<div class="stat-grid">
+  <div class="stat-card"><div class="value">57</div><div class="label">Current Tokens</div></div>
+  <div class="stat-card"><div class="value">60</div><div class="label">Proposed Tokens</div></div>
+  <div class="stat-card green"><div class="value">+15</div><div class="label">Tokens Added</div></div>
+  <div class="stat-card red"><div class="value">&minus;12</div><div class="label">Tokens Removed</div></div>
+</div>
+
+<div class="note-blue"><strong>Key architectural change:</strong> Font-size and line-height tokens switch from an index-based naming system (e.g., <code>base/font-size/25</code> = 18px) to a value-based system (e.g., <code>base/font-size/18</code> = 18). This makes token names more intuitive, reduces the chance of errors, and ensures abstraction happens at the usage layer rather than the base layer.</div>
+
+<h2>Summary of changes by property</h2>
+
+<table>
+  <tr><th>Property</th><th>Current</th><th>Proposed</th><th>Net change</th><th>Key changes</th></tr>
+  <tr>
+    <td><strong>font-family</strong></td><td>2 tokens</td><td>9 tokens</td><td style="color:#16a34a">+7</td>
+    <td>Renamed <code>brand</code> to per-font tokens (<code>dd-norms</code>, <code>omnes</code>, <code>stratos</code>); added individual mono tokens for each brand and system font</td>
+  </tr>
+  <tr>
+    <td><strong>font-weight</strong></td><td>5 tokens</td><td>6 tokens</td><td style="color:#16a34a">+1</td>
+    <td>Added <code>medium</code> (500); switched all values from strings to numeric CSS values</td>
+  </tr>
+  <tr>
+    <td><strong>font-size</strong></td><td>28 tokens</td><td>17 tokens</td><td style="color:#dc2626">&minus;11</td>
+    <td>Removed 10 unused semantic aliases + 1 numeric; switched to value-based naming</td>
+  </tr>
+  <tr>
+    <td><strong>letter-spacing</strong></td><td>7 tokens</td><td>9 tokens</td><td style="color:#16a34a">+2</td>
+    <td>Switched to value-based naming (<code>n0p8</code> = &minus;0.8); revised scale values; added <code>n0p2</code> and <code>0</code></td>
+  </tr>
+  <tr>
+    <td><strong>line-height</strong></td><td>15 tokens</td><td>19 tokens</td><td style="color:#16a34a">+4</td>
+    <td>Added 5 large values (48&ndash;80); removed step 55 (38px); switched to value-based naming</td>
+  </tr>
+</table>
+
+<!-- ==================== FONT FAMILY ==================== -->
+<h2>base/font-family</h2>
+<p><code>base/font-family/brand</code> is renamed to individual per-font tokens — one for each brand typeface. This keeps base tokens as pure, factual named constants and moves brand intent to the usage/semantic layer, where a token like <code>font-family/display</code> can reference whichever base font is appropriate per brand. Individual monospaced tokens are also added for each brand and system font to support code and tabular content.</p>
+
+<table>
+  <tr><th>Token</th><th>Value</th><th>Description</th><th>Status</th></tr>
+  <tr>
+    <td><code>base/font-family/dd-norms</code></td>
+    <td>DD Norms</td>
+    <td>DoorDash brand typeface</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/omnes</code></td>
+    <td>Omnes</td>
+    <td>Wolt brand typeface</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/stratos</code></td>
+    <td>Stratos</td>
+    <td>Deliveroo brand typeface</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/dd-norms-mono</code></td>
+    <td>DD Norms Mono</td>
+    <td>Monospaced variant of the DoorDash brand typeface</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/omnes-mono</code></td>
+    <td>Omnes Mono</td>
+    <td>Monospaced variant of the Wolt brand typeface</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/stratos-mono</code></td>
+    <td>Stratos Mono</td>
+    <td>Monospaced variant of the Deliveroo brand typeface</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/sf-mono</code></td>
+    <td>SF Mono</td>
+    <td>Apple system monospaced font for code and tabular content</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-family/inter-mono</code></td>
+    <td>Inter Mono</td>
+    <td>Cross-platform system monospaced font for code and tabular content</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+</table>
+
+<!-- ==================== FONT WEIGHT ==================== -->
+<h2>base/font-weight</h2>
+<p>Added <code>medium</code> (500) to fill the gap between <code>regular</code> (400) and <code>semibold</code> (600), completing the weight scale. All values are also switched from strings (e.g. <code>Regular</code>, <code>Bold</code>) to numeric CSS font-weight values for cross-platform consistency.</p>
+
+<div class="note"><strong>Why numeric values?</strong> The same numeric weight (e.g., 800) may be labelled differently across fonts &mdash; "Extra Bold" in Inter, "Heavy" in SF Pro. Numeric values are unambiguous and align with the <a href="https://www.designtokens.org/tr/2025.10/format/#font-weight" style="color: inherit;">W3C Design Tokens spec</a>, which treats strings as aliases for numeric weights.</div>
+
+<table>
+  <tr><th>Token</th><th>Previous value</th><th>Value</th><th>Description</th><th>Status</th></tr>
+  <tr>
+    <td><code>base/font-weight/light</code></td><td>Regular</td><td>300</td><td></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-weight/regular</code></td><td>Medium</td><td>400</td><td></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-weight/medium</code></td><td>&mdash;</td><td>500</td><td>The default font weight</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-weight/semibold</code></td><td>Bold</td><td>600</td><td></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-weight/bold</code></td><td>Bold</td><td>700</td><td>Used for headings</td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
+    <td><code>base/font-weight/extrabold</code></td><td>ExtraBold</td><td>800</td><td></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+</table>
+
+<!-- ==================== FONT SIZE ==================== -->
+<h2>base/font-size</h2>
+<p>The most significant structural change. Token naming switches from an index-based system to a value-based system where the token name matches the pixel value. All 10 semantic t-shirt size aliases are removed (they were 100% unreferenced). <code>base/font-size/190</code> (84px) is also removed.</p>
+
+<div class="note-green"><strong>Why value-based naming?</strong> With index-based naming, <code>base/font-size/25</code> = 18px required memorising a lookup table. With value-based naming, <code>base/font-size/18</code> = 18px is self-documenting. This reduces cognitive load and errors, while ensuring any abstraction (like semantic sizing) happens at the usage token layer where it belongs.</div>
+
+<h3>Proposed scale (17 tokens)</h3>
+<table>
+  <tr><th>Proposed token</th><th>Value (px)</th><th>Previous token</th><th>Status</th></tr>
+  <tr><td><code>base/font-size/10</code></td><td>10</td><td><code>base/font-size/5</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/12</code></td><td>12</td><td><code>base/font-size/10</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/14</code></td><td>14</td><td><code>base/font-size/15</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/16</code></td><td>16</td><td><code>base/font-size/20</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/18</code></td><td>18</td><td><code>base/font-size/25</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/20</code></td><td>20</td><td><code>base/font-size/30</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/22</code></td><td>22</td><td><code>base/font-size/35</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/24</code></td><td>24</td><td><code>base/font-size/40</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/28</code></td><td>28</td><td><code>base/font-size/50</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/32</code></td><td>32</td><td><code>base/font-size/60</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/36</code></td><td>36</td><td><code>base/font-size/70</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/40</code></td><td>40</td><td><code>base/font-size/80</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/44</code></td><td>44</td><td><code>base/font-size/90</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/48</code></td><td>48</td><td><code>base/font-size/100</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/56</code></td><td>56</td><td><code>base/font-size/120</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/60</code></td><td>60</td><td><code>base/font-size/130</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/font-size/72</code></td><td>72</td><td><code>base/font-size/160</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+</table>
+
+<h3>Removed tokens (11 tokens)</h3>
+<table>
+  <tr><th>Removed token</th><th>Value</th><th>Reason</th></tr>
+  <tr><td><code>base/font-size/190</code></td><td>84px</td><td>Only referenced by 1 mode (Merchant POS Plus); oversized for current needs</td></tr>
+  <tr><td><code>base/font-size/xx-small</code></td><td>&rarr; step 5</td><td rowspan="10" style="vertical-align:middle">Semantic aliases with zero references across all 32 modes. Usage tokens reference numeric steps directly, making this layer redundant.</td></tr>
+  <tr><td><code>base/font-size/x-small</code></td><td>&rarr; step 10</td></tr>
+  <tr><td><code>base/font-size/small</code></td><td>&rarr; step 15</td></tr>
+  <tr><td><code>base/font-size/medium</code></td><td>&rarr; step 20</td></tr>
+  <tr><td><code>base/font-size/large</code></td><td>&rarr; step 25</td></tr>
+  <tr><td><code>base/font-size/x-large</code></td><td>&rarr; step 30</td></tr>
+  <tr><td><code>base/font-size/xx-large</code></td><td>&rarr; step 40</td></tr>
+  <tr><td><code>base/font-size/xxx-large</code></td><td>&rarr; step 60</td></tr>
+  <tr><td><code>base/font-size/xxxx-large</code></td><td>&rarr; step 80</td></tr>
+  <tr><td><code>base/font-size/xxxxx-large</code></td><td>&rarr; step 90</td></tr>
+</table>
+
+<!-- ==================== LETTER SPACING ==================== -->
+<h2>base/letter-spacing</h2>
+<p>The letter-spacing scale has been revised for better distribution and switches to value-based naming, consistent with font-size and line-height. Token names use the <code>n</code> prefix for negative values and <code>p</code> in place of the decimal point (e.g. <code>n0p8</code> = &minus;0.8). Key value changes: <code>&minus;0.5</code> &rarr; <code>&minus;0.6</code>, <code>&minus;0.01</code> &rarr; <code>&minus;0.1</code>; added <code>&minus;0.2</code> and <code>0</code>.</p>
+
+<table>
+  <tr><th>Proposed token</th><th>Value</th><th>Previous token</th><th>Previous value</th><th>Status</th></tr>
+  <tr>
+    <td><code>base/letter-spacing/n2</code></td><td>&minus;2</td>
+    <td><code>base/letter-spacing/0</code></td><td>&minus;2</td>
+    <td><span class="tag tag-renamed">Renamed</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/n1</code></td><td>&minus;1</td>
+    <td>&mdash;</td><td>&mdash;</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/n0p8</code></td><td>&minus;0.8</td>
+    <td><code>base/letter-spacing/10</code></td><td>&minus;0.8</td>
+    <td><span class="tag tag-renamed">Renamed</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/n0p6</code></td><td>&minus;0.6</td>
+    <td><code>base/letter-spacing/20</code></td><td><span class="val-old">&minus;0.5</span></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/n0p4</code></td><td>&minus;0.4</td>
+    <td><code>base/letter-spacing/30</code></td><td>&minus;0.4</td>
+    <td><span class="tag tag-renamed">Renamed</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/n0p3</code></td><td>&minus;0.3</td>
+    <td><code>base/letter-spacing/40</code></td><td>&minus;0.3</td>
+    <td><span class="tag tag-renamed">Renamed</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/n0p2</code></td><td>&minus;0.2</td>
+    <td><code>base/letter-spacing/50</code></td><td>&minus;0.2</td>
+    <td><span class="tag tag-renamed">Renamed</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/n0p1</code></td><td>&minus;0.1</td>
+    <td>&mdash;</td><td>&mdash;</td>
+    <td><span class="tag tag-added">Added</span></td>
+  </tr>
+  <tr>
+    <td><code>base/letter-spacing/0</code></td><td>0</td>
+    <td><code>base/letter-spacing/70</code></td><td><span class="val-old">&minus;0.01</span></td>
+    <td><span class="tag tag-modified">Modified</span></td>
+  </tr>
+</table>
+
+<div class="note"><strong>Scale distribution:</strong> The current scale has uneven gaps: &minus;2, &minus;0.8, &minus;0.5, &minus;0.4, &minus;0.3, &minus;0.2, &minus;0.01. The proposed scale fills the gaps more evenly: &minus;2, &minus;1, &minus;0.8, &minus;0.6, &minus;0.4, &minus;0.3, &minus;0.2, &minus;0.1, 0. This provides finer control in the &minus;0.2 to 0 range where most body text letter-spacing lives.</div>
+
+<!-- ==================== LINE HEIGHT ==================== -->
+<h2>base/line-height</h2>
+<p>Line-height switches to value-based naming (matching font-size). The scale is extended at the upper end to support larger display sizes, and <code>base/line-height/55</code> (38px) is removed. A note at step 32 marks where the increment widens from 2px to 4px.</p>
+
+<h3>Proposed scale (19 tokens)</h3>
+<table>
+  <tr><th>Proposed token</th><th>Value (px)</th><th>Previous token</th><th>Status</th></tr>
+  <tr><td><code>base/line-height/16</code></td><td>16</td><td><code>base/line-height/0</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/18</code></td><td>18</td><td><code>base/line-height/5</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/20</code></td><td>20</td><td><code>base/line-height/10</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/22</code></td><td>22</td><td><code>base/line-height/15</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/24</code></td><td>24</td><td><code>base/line-height/20</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/26</code></td><td>26</td><td><code>base/line-height/25</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/28</code></td><td>28</td><td><code>base/line-height/30</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/30</code></td><td>30</td><td><code>base/line-height/35</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/32</code></td><td>32</td><td><code>base/line-height/40</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/36</code></td><td>36</td><td><code>base/line-height/50</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/40</code></td><td>40</td><td><code>base/line-height/60</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/44</code></td><td>44</td><td><code>base/line-height/70</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/48</code></td><td>48</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/52</code></td><td>52</td><td><code>base/line-height/90</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/56</code></td><td>56</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/60</code></td><td>60</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/68</code></td><td>68</td><td><code>base/line-height/130</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><td><code>base/line-height/72</code></td><td>72</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/80</code></td><td>80</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
+</table>
+
+<h3>Removed tokens (1 token)</h3>
+<table>
+  <tr><th>Removed token</th><th>Value</th><th>Reason</th></tr>
+  <tr><td><code>base/line-height/55</code></td><td>38px</td><td>Only referenced by Mx Tablet (2 refs). The 36px and 40px steps provide sufficient coverage at this range.</td></tr>
+</table>
+
+<div class="note"><strong>Step progression note:</strong> The line-height scale increments by 2px from 16 through 32, then widens to 4px increments from 32 upward. This matches the font-size scale&rsquo;s pattern and provides proportionally appropriate spacing as sizes increase.</div>
 
 </div>
 <script>

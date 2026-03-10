@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token Proposal — Type Token Architecture</title>
+<style>
+  :root { --bg: #fff; --border: #e5e5e5; --text: #1a1a1a; --muted: #6b7280; --accent: #2563eb; }
+  [data-theme="dark"] { --bg: #0f0f0f; --border: #2a2a2a; --text: #e5e5e5; --muted: #888; --accent: #60a5fa; }
+  [data-theme="dark"] .nav-dropdown-menu { background: #1a1a1a; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+  [data-theme="dark"] .nav-dropdown-menu a:hover { background: #222; }
+  [data-theme="dark"] .layer-box { background: #141414; border-color: #2a2a2a; }
+  [data-theme="dark"] .layer-box.flagged { background: #180808; border-left-color: #ef4444; }
+  [data-theme="dark"] .badge-private { background: #2a2a2a; color: #888; }
+  [data-theme="dark"] .badge-public { background: #1e3a5f; color: #93c5fd; }
+  [data-theme="dark"] .badge-new { background: #14532d; color: #86efac; }
+  [data-theme="dark"] .chip { background: #1e1e1e; color: #9ca3af; }
+  [data-theme="dark"] .chip.flagged { background: #2a0808; color: #f87171; border-color: #7f1d1d; }
+  [data-theme="dark"] .issue-item { border-bottom-color: #1e1e1e; }
+  [data-theme="dark"] .icon-x { background: #450a0a; color: #f87171; }
+  [data-theme="dark"] .icon-check { background: #052e16; color: #86efac; }
+  [data-theme="dark"] .info-card { background: #141414; border-color: #2a2a2a; }
+  [data-theme="dark"] .col-count.proposed-count { background: #1e3a5f; color: #93c5fd; }
+
+  .theme-toggle { margin-left: auto; display: flex; align-items: center; }
+  .theme-toggle button { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; padding: 0; }
+  .theme-toggle button:hover { color: var(--text); border-color: var(--text); }
+  .theme-toggle svg { width: 18px; height: 18px; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px 48px; }
+
+  nav.top-nav { border-bottom: 1px solid var(--border); margin-bottom: 40px; padding: 14px 0; display: flex; align-items: baseline; gap: 24px; font-size: 13px; position: relative; }
+  nav.top-nav a { color: var(--muted); text-decoration: none; font-weight: 500; }
+  nav.top-nav a:hover { color: var(--text); }
+  nav.top-nav a.current { color: var(--text); }
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-toggle { color: var(--muted); font-weight: 500; font-size: 13px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 4px; background: none; border: none; font-family: inherit; padding: 0; }
+  .nav-dropdown-toggle:hover { color: var(--text); }
+  .nav-dropdown-toggle.current { color: var(--text); }
+  .nav-dropdown-toggle .caret { font-size: 10px; transition: transform 0.15s ease; }
+  .nav-dropdown.open .caret { transform: rotate(180deg); }
+  .nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); min-width: 160px; padding: 6px 0; z-index: 100; }
+  .nav-dropdown.open .nav-dropdown-menu { display: block; }
+  .nav-dropdown-menu a { display: block; padding: 8px 16px; color: var(--text); font-size: 14px; font-weight: 400; }
+  .nav-dropdown-menu a:hover { background: #f9fafb; }
+
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+  /* Column headers */
+  .proposal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 8px; }
+  .col-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .col-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .col-count { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+  .col-count.current-count { background: #f3f4f6; color: var(--muted); }
+  .col-count.proposed-count { background: #dbeafe; color: #1e40af; }
+
+  /* Layer diagram */
+  .layer-stack { display: flex; flex-direction: column; }
+  .layer-box { border: 1px solid var(--border); border-left: 4px solid var(--border); border-radius: 0 8px 8px 0; padding: 14px 16px; background: var(--bg); }
+  .layer-box.private { border-left-color: #9ca3af; }
+  .layer-box.public { border-left-color: #2563eb; }
+  .layer-box.new { border-left-color: #16a34a; }
+  .layer-box.flagged { border-left-color: #ef4444; background: #fff8f8; }
+  .layer-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 5px; }
+  .layer-name { font-size: 14px; font-weight: 600; }
+  .layer-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; margin-left: 8px; margin-top: 1px; }
+  .badge-private { background: #f3f4f6; color: #6b7280; }
+  .badge-public { background: #dbeafe; color: #1e40af; }
+  .badge-new { background: #dcfce7; color: #166534; }
+  .layer-desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
+  .layer-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip { font-size: 11px; background: #f3f4f6; color: #4b5563; padding: 2px 8px; border-radius: 3px; border: 1px solid transparent; }
+  .chip.flagged { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+
+  .layer-arrow { display: flex; align-items: center; justify-content: center; height: 22px; color: var(--muted); font-size: 14px; }
+  .layer-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* Issues & solutions */
+  .issues-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+  .issues-col h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+  .issue-item { display: flex; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+  .issue-item:last-child { border-bottom: none; }
+  .issue-icon { flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; margin-top: 2px; }
+  .icon-x { background: #fef2f2; color: #dc2626; }
+  .icon-check { background: #f0fdf4; color: #16a34a; }
+  .issue-text strong { display: block; font-size: 13px; margin-bottom: 2px; }
+  .issue-text span { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* Info card */
+  .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .info-card { border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; }
+  .info-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .info-card .card-body { font-size: 13px; color: var(--muted); margin-bottom: 6px; line-height: 1.5; }
+  .info-card .card-example { font-size: 13px; color: var(--muted); margin-bottom: 16px; font-style: italic; }
+  .info-card .rules-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px; }
+  .info-card ol { margin: 0 0 0 18px; }
+  .info-card ol li { font-size: 13px; color: var(--muted); margin-bottom: 6px; line-height: 1.5; }
+  .note-blue { padding: 12px 16px; background: #eff6ff; border-left: 3px solid #2563eb; border-radius: 0 8px 8px 0; font-size: 13px; margin: 0 0 32px; line-height: 1.6; color: var(--text); }
+  [data-theme="dark"] .note-blue { background: #0c1524; border-left-color: #2563eb; }
+</style>
+<script>(function(){var t=localStorage.getItem("prism-theme")||"light";document.documentElement.setAttribute("data-theme",t)})()</script>
+</head>
+<body>
+<div class="container">
+
+<nav class="top-nav">
+  <div class="nav-dropdown" id="tokensDropdown">
+    <button class="nav-dropdown-toggle" onclick="toggleDropdown('tokensDropdown')">Token Inventory <span class="caret">&#9662;</span></button>
+    <div class="nav-dropdown-menu">
+      <a href="tokens-base.html">Base Tokens</a>
+      <a href="tokens-usage.html">Usage Tokens</a>
+    </div>
+  </div>
+  <div class="nav-dropdown" id="analyticsDropdown">
+    <button class="nav-dropdown-toggle" onclick="toggleDropdown('analyticsDropdown')">Type Analytics <span class="caret">&#9662;</span></button>
+    <div class="nav-dropdown-menu">
+      <a href="index.html">Base Tokens</a>
+      <a href="usage-tokens.html">Usage Tokens</a>
+    </div>
+  </div>
+  <div class="nav-dropdown" id="proposalDropdown">
+    <button class="nav-dropdown-toggle current" onclick="toggleDropdown('proposalDropdown')">Token Proposal <span class="caret">&#9662;</span></button>
+    <div class="nav-dropdown-menu">
+      <a href="token-proposal-overview.html">Token Proposal</a>
+      <a href="token-proposal.html">Base Tokens</a>
+      <a href="token-proposal-usage.html">Usage Tokens</a>
+    </div>
+  </div>
+  <a href="type-scale.html">Type Scale</a>
+  <a href="type-styles.html">Type Styles</a>
+  <div class="theme-toggle">
+    <button id="themeBtn" aria-label="Toggle dark mode"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.99 46V37.85c-2.37-.34-4.55-1.27-6.39-2.64l-6.2 6.2a2 2 0 01-2.83-2.83l6.2-6.2a14.01 14.01 0 01-2.64-6.39H2a2 2 0 010-4h8.13c.34-2.37 1.28-4.56 2.65-6.39L6.59 9.4a2 2 0 012.83-2.83l6.2 6.2A14.01 14.01 0 0121.99 10.15V2a2 2 0 014 0v8.14c2.37.34 4.55 1.27 6.38 2.64l6.22-6.21a2 2 0 012.83 2.83l-6.22 6.21a14.01 14.01 0 012.65 6.38H46a2 2 0 010 4h-8.15a14.01 14.01 0 01-2.63 6.38l6.22 6.22a2 2 0 01-2.83 2.83l-6.22-6.21a14.01 14.01 0 01-6.4 2.65V46a2 2 0 01-4 0zM23.99 14a10 10 0 100 20 10 10 0 000-20z" fill="currentColor"/></svg></button>
+  </div>
+</nav>
+
+<h1>Prism Type Token Architecture Proposal</h1>
+<p class="subtitle">Evolving from a 3-layer system to a 5-layer architecture by introducing a dedicated Base Brand primitive for typefaces and a Composite layer for Type Styles between Usage and Component.</p>
+
+<div class="note-blue"><strong>Note on the Composite layer:</strong> Composite Type tokens (Type Styles) already exist within the Usage layer today, sitting alongside primitive usage tokens. This proposal pulls them out into their own dedicated Composite layer — keeping things tidy and mirroring the same structural pattern being proposed for color tokens.</div>
+
+<h2>Architecture comparison</h2>
+<div class="proposal-grid">
+
+  <!-- CURRENT -->
+  <div>
+    <div class="col-header">
+      <span class="col-label">Current</span>
+      <span class="col-count current-count">3 layers</span>
+    </div>
+    <div class="layer-stack">
+
+      <div class="layer-box private">
+        <div class="layer-header">
+          <span class="layer-name">Component</span>
+          <span class="layer-badge badge-private">Private</span>
+        </div>
+        <div class="layer-desc">Component-specific typography bindings consumed by UI. References Usage tokens directly.</div>
+        <div class="layer-chips">
+          <span class="chip">Button</span>
+          <span class="chip">Body</span>
+          <span class="chip">Label</span>
+          <span class="chip">Caption</span>
+          <span class="chip">Display</span>
+        </div>
+      </div>
+
+      <div class="layer-arrow">↓</div>
+
+      <div class="layer-box public">
+        <div class="layer-header">
+          <span class="layer-name">Usage</span>
+          <span class="layer-badge badge-public">Public</span>
+        </div>
+        <div class="layer-desc">Semantic type tokens and composite type styles mixed together. The only layer designers and engineers can access. Also holds font-family values that have no clear structural home.</div>
+        <div class="layer-chips">
+          <span class="chip">Font Size</span>
+          <span class="chip">Line Height</span>
+          <span class="chip">Letter Spacing</span>
+          <span class="chip">Font Weight</span>
+          <span class="chip flagged">Type Styles</span>
+          <span class="chip flagged">Font Family</span>
+        </div>
+      </div>
+
+      <div class="layer-arrow">↓</div>
+
+      <div class="layer-box flagged">
+        <div class="layer-header">
+          <span class="layer-name">Base</span>
+          <span class="layer-badge badge-private">Private</span>
+        </div>
+        <div class="layer-desc">Raw typographic primitives. Blocked from direct use. Contains numeric steps and a parallel set of unused semantic aliases — two naming systems in one bucket.</div>
+        <div class="layer-chips">
+          <span class="chip">font-size/25</span>
+          <span class="chip">line-height/15</span>
+          <span class="chip">letter-spacing/70</span>
+          <span class="chip">font-weight/bold</span>
+          <span class="chip flagged">xx-small</span>
+          <span class="chip flagged">x-small</span>
+          <span class="chip flagged">small</span>
+          <span class="chip flagged">+7 more</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROPOSED -->
+  <div>
+    <div class="col-header">
+      <span class="col-label">Proposed</span>
+      <span class="col-count proposed-count">5 layers</span>
+    </div>
+    <div class="layer-stack">
+
+      <div class="layer-box private">
+        <div class="layer-header">
+          <span class="layer-name">Component</span>
+          <span class="layer-badge badge-private">Private</span>
+        </div>
+        <div class="layer-desc">Component-specific typography bindings. References Type Style or Usage tokens.</div>
+        <div class="layer-chips">
+          <span class="chip">Button</span>
+          <span class="chip">Body</span>
+          <span class="chip">Label</span>
+          <span class="chip">Caption</span>
+          <span class="chip">Display</span>
+        </div>
+      </div>
+
+      <div class="layer-arrow">↓</div>
+
+      <div class="layer-box new">
+        <div class="layer-header">
+          <span class="layer-name">Composite (Type Styles)</span>
+          <span class="layer-badge badge-new">New &middot; Public</span>
+        </div>
+        <div class="layer-desc">Composite Type tokens already live in Usage today. Pulling them into their own layer keeps primitive and composite tokens cleanly separated, and mirrors the Composite layer being introduced in the color token proposal.</div>
+        <div class="layer-chips">
+          <span class="chip">Display</span>
+          <span class="chip">Heading</span>
+          <span class="chip">Body</span>
+          <span class="chip">Label</span>
+          <span class="chip">Caption</span>
+        </div>
+      </div>
+
+      <div class="layer-arrow">↓</div>
+
+      <div class="layer-box public">
+        <div class="layer-header">
+          <span class="layer-name">Usage</span>
+          <span class="layer-badge badge-public">Public</span>
+        </div>
+        <div class="layer-desc">Semantic type tokens. References Base and Base Brand tokens. Font-family moves to its own dedicated layer.</div>
+        <div class="layer-chips">
+          <span class="chip">Font Size</span>
+          <span class="chip">Line Height</span>
+          <span class="chip">Letter Spacing</span>
+          <span class="chip">Font Weight</span>
+        </div>
+      </div>
+
+      <div class="layer-arrow">↓</div>
+
+      <div class="layer-split">
+        <div class="layer-box new">
+          <div class="layer-header">
+            <span class="layer-name">Base Brand</span>
+            <span class="layer-badge badge-new">New &middot; Public</span>
+          </div>
+          <div class="layer-desc">Brand-specific typefaces. Static identity values — not themeable per color mode.</div>
+          <div class="layer-chips">
+            <span class="chip">DD Norms</span>
+            <span class="chip">Omnes</span>
+            <span class="chip">Stratos</span>
+            <span class="chip">SF Pro</span>
+          </div>
+        </div>
+        <div class="layer-box private">
+          <div class="layer-header">
+            <span class="layer-name">Base</span>
+            <span class="layer-badge badge-private">Private</span>
+          </div>
+          <div class="layer-desc">Numeric typographic scale. Cleaned up — semantic aliases removed, unused steps deprecated.</div>
+          <div class="layer-chips">
+            <span class="chip">font-size</span>
+            <span class="chip">line-height</span>
+            <span class="chip">letter-spacing</span>
+            <span class="chip">font-weight</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<h2>Known issues &amp; what this solves</h2>
+<div class="issues-grid">
+
+  <div class="issues-col">
+    <h3>Known issues</h3>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-x">✕</div>
+      <div class="issue-text">
+        <strong>Semantic aliases at Base are 100% unused.</strong>
+        <span>10 font-size aliases (xx-small → xxxxx-large) exist at the Base level but are never referenced by any token across all 32 modes. They duplicate naming that belongs at the Usage layer.</span>
+      </div>
+    </div>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-x">✕</div>
+      <div class="issue-text">
+        <strong>17 of 57 base tokens (30%) are never referenced.</strong>
+        <span>Nearly a third of the base type token inventory is dead weight with no clear path to removal because layer ownership is ambiguous.</span>
+      </div>
+    </div>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-x">✕</div>
+      <div class="issue-text">
+        <strong>No composite typography layer.</strong>
+        <span>Component tokens independently bundle font-size, line-height, letter-spacing, and font-weight — duplicating the same combinations across dozens of comp tokens with no shared definition.</span>
+      </div>
+    </div>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-x">✕</div>
+      <div class="issue-text">
+        <strong>Font-family has no structural home.</strong>
+        <span>Brand typefaces are embedded in Usage alongside semantic scale values, with no distinction between identity-level choices and functional type decisions.</span>
+      </div>
+    </div>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-x">✕</div>
+      <div class="issue-text">
+        <strong>Base is completely private.</strong>
+        <span>Even brand-critical typefaces that partners need to reference are inaccessible — forcing teams to hardcode values or misuse the Usage layer.</span>
+      </div>
+    </div>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-x">✕</div>
+      <div class="issue-text">
+        <strong>Two naming conventions coexist in Base.</strong>
+        <span>Numeric steps (font-size/25) and semantic aliases (font-size/small) describe the same concept with no clear convention, creating confusion about which to reference.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="issues-col">
+    <h3>What this solves</h3>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-check">✓</div>
+      <div class="issue-text">
+        <strong>One naming convention per layer.</strong>
+        <span>Semantic aliases are removed from Base. Numeric steps stay at Base, semantic names stay at Usage — one convention, one layer, no ambiguity.</span>
+      </div>
+    </div>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-check">✓</div>
+      <div class="issue-text">
+        <strong>17 unused tokens can be deprecated with confidence.</strong>
+        <span>Clear layer responsibilities make the audit trail unambiguous. Tokens with no layer-appropriate consumers can be removed safely.</span>
+      </div>
+    </div>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-check">✓</div>
+      <div class="issue-text">
+        <strong>Type Style layer eliminates duplication.</strong>
+        <span>Define a typography combination once at the Type Style layer. Component tokens reference it — changes propagate automatically across the system.</span>
+      </div>
+    </div>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-check">✓</div>
+      <div class="issue-text">
+        <strong>Base Brand gives typefaces a dedicated, public home.</strong>
+        <span>Brand fonts are accessible to designers and engineers without conflating brand identity with functional semantic values at the Usage layer.</span>
+      </div>
+    </div>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-check">✓</div>
+      <div class="issue-text">
+        <strong>Public/private boundaries are explicit and intentional.</strong>
+        <span>Base stays private. Base Brand and Type Style are public — a documented, architectural decision rather than an accident of implementation.</span>
+      </div>
+    </div>
+
+    <div class="issue-item">
+      <div class="issue-icon icon-check">✓</div>
+      <div class="issue-text">
+        <strong>Scale audits become simpler.</strong>
+        <span>A numeric-only Base with clean step coverage is easier to understand, document, and evolve — especially across 32 theme modes.</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="bottom-grid">
+  <div></div>
+  <div class="info-card">
+    <h3>What is a Type Style token?</h3>
+    <p class="card-body">A composite token that bundles font-size, line-height, letter-spacing, and font-weight into a single reusable typography definition.</p>
+    <p class="card-example"><em>i.e. Display/Large, Heading/Medium, Body/Default, Label/Small</em></p>
+    <div class="rules-label">Rules</div>
+    <ol>
+      <li>Type Style tokens are public and can be referenced by designers and engineers</li>
+      <li>Type Style tokens reference Usage tokens — never Base directly</li>
+      <li>Component tokens should reference Type Style tokens rather than bundling properties individually</li>
+      <li>Changes to a Type Style token have a predictable, auditable blast radius</li>
+      <li>Type Style tokens are not brand-specific — brand differentiation lives in Base Brand</li>
+    </ol>
+  </div>
+</div>
+
+</div>
+<script>
+function toggleDropdown(id) {
+  document.querySelectorAll('.nav-dropdown').forEach(function(dd) {
+    if (dd.id !== id) dd.classList.remove('open');
+  });
+  document.getElementById(id).classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown').forEach(function(dd) { dd.classList.remove('open'); });
+  }
+});
+
+document.getElementById('themeBtn').addEventListener('click', function() {
+  var current = document.documentElement.getAttribute('data-theme') || 'light';
+  var next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('prism-theme', next);
+});
+</script>
+</body>
+</html>

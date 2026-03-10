@@ -451,6 +451,16 @@ document.getElementById('themeBtn').addEventListener('click', function() {
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('prism-theme', next);
 });
+
+function equalizeLayerCards() {
+  var boxes = document.querySelectorAll('.layer-box');
+  boxes.forEach(function(b) { b.style.height = ''; });
+  var maxH = 0;
+  boxes.forEach(function(b) { maxH = Math.max(maxH, b.offsetHeight); });
+  boxes.forEach(function(b) { b.style.height = maxH + 'px'; });
+}
+equalizeLayerCards();
+window.addEventListener('resize', equalizeLayerCards);
 </script>
 </body>
 </html>

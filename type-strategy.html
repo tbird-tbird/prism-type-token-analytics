@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Type Strategy</title>
+<style>
+  :root { --bg: #fff; --border: #e5e5e5; --text: #1a1a1a; --muted: #6b7280; --accent: #2563eb; }
+  [data-theme="dark"] { --bg: #0f0f0f; --border: #2a2a2a; --text: #e5e5e5; --muted: #888; --accent: #60a5fa; }
+  [data-theme="dark"] .nav-dropdown-menu { background: #1a1a1a; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+  [data-theme="dark"] .nav-dropdown-menu a:hover { background: #222; }
+  [data-theme="dark"] .phase-badge { background: #1e3a5f; color: #93c5fd; }
+  [data-theme="dark"] .problem-card { background: #141414; border-color: #2a2a2a; }
+  [data-theme="dark"] .goal-card { background: #141414; border-color: #2a2a2a; }
+  [data-theme="dark"] .goal-item { border-bottom-color: #1e1e1e; }
+  [data-theme="dark"] .icon-x { background: #450a0a; color: #f87171; }
+  [data-theme="dark"] .icon-check { background: #052e16; color: #86efac; }
+  [data-theme="dark"] .program-card { background: #0c1524; border-color: #1e3a5f; }
+  [data-theme="dark"] .phase-row { border-bottom-color: #1e1e1e; }
+  [data-theme="dark"] .phase-status.complete { background: #052e16; color: #86efac; }
+  [data-theme="dark"] .phase-status.active { background: #1e3a5f; color: #93c5fd; }
+  [data-theme="dark"] .phase-status.planned { background: #1e1e1e; color: #888; }
+  [data-theme="dark"] .connect-card { background: #141414; border-color: #2a2a2a; }
+  [data-theme="dark"] .connect-item { border-bottom-color: #1e1e1e; }
+
+  .theme-toggle { margin-left: auto; display: flex; align-items: center; }
+  .theme-toggle button { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; padding: 0; }
+  .theme-toggle button:hover { color: var(--text); border-color: var(--text); }
+  .theme-toggle svg { width: 18px; height: 18px; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px 48px; }
+
+  nav.top-nav { border-bottom: 1px solid var(--border); margin-bottom: 40px; padding: 14px 0; display: flex; align-items: baseline; gap: 24px; font-size: 13px; position: relative; }
+  nav.top-nav a { color: var(--muted); text-decoration: none; font-weight: 500; }
+  nav.top-nav a:hover { color: var(--text); }
+  nav.top-nav a.current { color: var(--text); }
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-toggle { color: var(--muted); font-weight: 500; font-size: 13px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 4px; background: none; border: none; font-family: inherit; padding: 0; }
+  .nav-dropdown-toggle:hover { color: var(--text); }
+  .nav-dropdown-toggle.current { color: var(--text); }
+  .nav-dropdown-toggle .caret { font-size: 10px; transition: transform 0.15s ease; }
+  .nav-dropdown.open .caret { transform: rotate(180deg); }
+  .nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); min-width: 160px; padding: 6px 0; z-index: 100; }
+  .nav-dropdown.open .nav-dropdown-menu { display: block; }
+  .nav-dropdown-menu a { display: block; padding: 8px 16px; color: var(--text); font-size: 14px; font-weight: 400; }
+  .nav-dropdown-menu a:hover { background: #f9fafb; }
+
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+  /* Phase badge */
+  .page-header { margin-bottom: 32px; }
+  .phase-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 4px; margin-bottom: 12px; }
+
+  /* Summary */
+  .summary-text { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 760px; margin-bottom: 0; }
+
+  /* Program context card */
+  .program-card { border: 1px solid #bfdbfe; background: #eff6ff; border-radius: 10px; padding: 20px 24px; margin-bottom: 40px; }
+  .program-card .program-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #1e40af; margin-bottom: 12px; }
+  .program-card .program-headline { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .program-card .program-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .phase-table { width: 100%; border-collapse: collapse; }
+  .phase-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #bfdbfe; font-size: 13px; }
+  .phase-row:last-child { border-bottom: none; }
+  .phase-name { font-weight: 500; flex: 1; }
+  .phase-detail { color: var(--muted); flex: 2; }
+  .phase-status { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
+  .phase-status.complete { background: #dcfce7; color: #166534; }
+  .phase-status.active { background: #dbeafe; color: #1e40af; }
+  .phase-status.planned { background: #f3f4f6; color: #6b7280; }
+
+  /* Issues */
+  .issues-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 8px; }
+  .issue-card { border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; background: var(--bg); }
+  .issue-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-bottom: 10px; }
+  .icon-x { background: #fef2f2; color: #dc2626; }
+  .icon-check { background: #f0fdf4; color: #16a34a; }
+  .issue-card strong { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .issue-card p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* Goals */
+  .goal-statement { font-size: 14px; color: var(--text); line-height: 1.7; padding: 16px 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); margin-bottom: 16px; }
+  .goal-list { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .goal-item { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); align-items: flex-start; }
+  .goal-item:last-child { border-bottom: none; }
+  .goal-item .icon-check { margin-top: 1px; flex-shrink: 0; }
+  .goal-item .goal-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .goal-item .goal-text strong { display: block; font-size: 13px; color: var(--text); font-weight: 600; margin-bottom: 2px; }
+
+  /* Token architecture connection */
+  .connect-card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .connect-header { padding: 14px 18px; border-bottom: 1px solid var(--border); }
+  .connect-header .connect-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 4px; }
+  .connect-header .connect-title { font-size: 14px; font-weight: 600; }
+  .connect-item { display: flex; gap: 14px; padding: 12px 18px; border-bottom: 1px solid var(--border); align-items: flex-start; }
+  .connect-item:last-child { border-bottom: none; }
+  .connect-goal { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; min-width: 160px; padding-top: 2px; flex-shrink: 0; }
+  .connect-action { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .connect-action strong { color: var(--text); font-weight: 500; }
+</style>
+<script>(function(){var t=localStorage.getItem("prism-theme")||"light";document.documentElement.setAttribute("data-theme",t)})()</script>
+</head>
+<body>
+<div class="container">
+
+<nav class="top-nav">
+  <div class="nav-dropdown" id="tokensDropdown">
+    <button class="nav-dropdown-toggle" onclick="toggleDropdown('tokensDropdown')">Token Inventory <span class="caret">&#9662;</span></button>
+    <div class="nav-dropdown-menu">
+      <a href="tokens-base.html">Base Tokens</a>
+      <a href="tokens-usage.html">Usage Tokens</a>
+    </div>
+  </div>
+  <div class="nav-dropdown" id="analyticsDropdown">
+    <button class="nav-dropdown-toggle" onclick="toggleDropdown('analyticsDropdown')">Type Analytics <span class="caret">&#9662;</span></button>
+    <div class="nav-dropdown-menu">
+      <a href="index.html">Base Tokens</a>
+      <a href="usage-tokens.html">Usage Tokens</a>
+    </div>
+  </div>
+  <div class="nav-dropdown" id="proposalDropdown">
+    <button class="nav-dropdown-toggle" onclick="toggleDropdown('proposalDropdown')">Token Proposal <span class="caret">&#9662;</span></button>
+    <div class="nav-dropdown-menu">
+      <a href="token-proposal-overview.html">Token Proposal</a>
+      <a href="token-proposal.html">Base Tokens</a>
+      <a href="token-proposal-usage.html">Usage Tokens</a>
+    </div>
+  </div>
+  <a href="type-strategy.html" class="current">Type Strategy</a>
+  <a href="type-scale.html">Type Scale</a>
+  <a href="type-styles.html">Type Styles</a>
+  <div class="theme-toggle">
+    <button id="themeBtn" aria-label="Toggle dark mode"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.99 46V37.85c-2.37-.34-4.55-1.27-6.39-2.64l-6.2 6.2a2 2 0 01-2.83-2.83l6.2-6.2a14.01 14.01 0 01-2.64-6.39H2a2 2 0 010-4h8.13c.34-2.37 1.28-4.56 2.65-6.39L6.59 9.4a2 2 0 012.83-2.83l6.2 6.2A14.01 14.01 0 0121.99 10.15V2a2 2 0 014 0v8.14c2.37.34 4.55 1.27 6.38 2.64l6.22-6.21a2 2 0 012.83 2.83l-6.22 6.21a14.01 14.01 0 012.65 6.38H46a2 2 0 010 4h-8.15a14.01 14.01 0 01-2.63 6.38l6.22 6.22a2 2 0 01-2.83 2.83l-6.22-6.21a14.01 14.01 0 01-6.4 2.65V46a2 2 0 01-4 0zM23.99 14a10 10 0 100 20 10 10 0 000-20z" fill="currentColor"/></svg></button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="phase-badge">Phase 2 · Foundation Unification</div>
+  <h1>Type Foundation Consolidation</h1>
+  <p class="subtitle">Typography · Unified Design Foundations</p>
+  <p class="summary-text">This document outlines the strategy to refactor Prism's base and usage type tokens into a unified, scalable typographic foundation that supports all brands and products across DoorDash, Wolt, Deliveroo, and future products.</p>
+</div>
+
+<div class="program-card">
+  <div class="program-label">Program Context</div>
+  <div class="program-headline">Phase 2: Unified Design Foundations</div>
+  <div class="program-desc">Following Phase 1 (Pedregal), which unified brand asset ownership under Prism, Phase 2 focuses on consolidating duplicate primitives across Color, Typography, Icons, Spacing, Elevation, Motion, and Illustration. Type is one of seven property families being addressed. Semantic tokens remain stable throughout — only the primitive and structural layer changes.</div>
+  <div class="phase-row">
+    <span class="phase-name">Phase 1 · Asset Consolidation</span>
+    <span class="phase-detail">Unified brand asset ownership under Prism (Pedregal)</span>
+    <span class="phase-status complete">Complete</span>
+  </div>
+  <div class="phase-row">
+    <span class="phase-name">Phase 2 · Foundation Unification</span>
+    <span class="phase-detail">Consolidate primitives across Color, Typography, Icons, Spacing, and more</span>
+    <span class="phase-status active">In Progress</span>
+  </div>
+  <div class="phase-row">
+    <span class="phase-name">Phase 3 · Language Elevation (Kin)</span>
+    <span class="phase-detail">Define and apply audience visual design language and quality progression</span>
+    <span class="phase-status active">In Progress</span>
+  </div>
+</div>
+
+<h2>Problems</h2>
+<div class="issues-grid">
+  <div class="issue-card">
+    <div class="issue-icon icon-x">✕</div>
+    <strong>System doesn't support product vision</strong>
+    <p>The current type system no longer provides the expressive range our products need to realize their design vision, constraining product teams rather than enabling them.</p>
+  </div>
+  <div class="issue-card">
+    <div class="issue-icon icon-x">✕</div>
+    <strong>Too many styles leads to misuse</strong>
+    <p>An excessive number of type styles makes it too easy to misuse the system, creating visual inconsistencies across products and undermining the coherence of the design language.</p>
+  </div>
+  <div class="issue-card">
+    <div class="issue-icon icon-x">✕</div>
+    <strong>Brand fonts introduce accessibility risk</strong>
+    <p>Using brand fonts for body text introduces accessibility and legibility challenges compared to platform-standard system fonts, which are optimized for reading at smaller sizes.</p>
+  </div>
+  <div class="issue-card">
+    <div class="issue-icon icon-x">✕</div>
+    <strong>Scale and token structure has redundancies and gaps</strong>
+    <p>Redundancies and gaps in the existing type scale and token structure negatively impact usability, scalability, and long-term maintainability — especially across 32 theme modes.</p>
+  </div>
+</div>
+
+<h2>Goals</h2>
+<p class="goal-statement">Design and implement a simplified, scalable, and accessible typography system that serves all products, brands, and surfaces across the DoorDash portfolio.</p>
+<div class="goal-list">
+  <div class="goal-item">
+    <div class="issue-icon icon-check">✓</div>
+    <div class="goal-text">
+      <strong>Reduce cognitive load and misuse</strong>
+      Offer a clear and intentional set of type styles for each surface — fewer options, better outcomes, less room for inconsistency.
+    </div>
+  </div>
+  <div class="goal-item">
+    <div class="issue-icon icon-check">✓</div>
+    <div class="goal-text">
+      <strong>Enable product vision with expressive range</strong>
+      Give product teams sufficient expressive flexibility to realize their design vision without stepping outside the system.
+    </div>
+  </div>
+  <div class="goal-item">
+    <div class="issue-icon icon-check">✓</div>
+    <div class="goal-text">
+      <strong>Improve accessibility and legibility</strong>
+      Leverage system fonts for body text to optimize readability across sizes and surfaces, reducing reliance on brand fonts where they create risk.
+    </div>
+  </div>
+  <div class="goal-item">
+    <div class="issue-icon icon-check">✓</div>
+    <div class="goal-text">
+      <strong>Establish a rationalized token architecture</strong>
+      Create a clear, layered token structure that supports consistency, scalability, and long-term maintainability as the system evolves toward Kin.
+    </div>
+  </div>
+</div>
+
+<h2>How the token architecture delivers on this</h2>
+<div class="connect-card">
+  <div class="connect-header">
+    <div class="connect-label">Proposal</div>
+    <div class="connect-title">Evolving from a 3-layer to a 5-layer type token architecture — <a href="token-proposal-overview.html" style="color: var(--accent); text-decoration: none; font-weight: 500;">view proposal →</a></div>
+  </div>
+  <div class="connect-item">
+    <span class="connect-goal">Reduce misuse</span>
+    <span class="connect-action"><strong>Dedicated Composite layer</strong> separates type styles from primitive tokens, making the intended consumption pattern structurally explicit. Component tokens reference one Type Style instead of bundling properties ad-hoc.</span>
+  </div>
+  <div class="connect-item">
+    <span class="connect-goal">Expressive range</span>
+    <span class="connect-action"><strong>Cleaned-up Base layer</strong> removes dead weight (17 unreferenced tokens, 10 semantic aliases) and establishes a clearer numeric scale — making it easier to reason about coverage and add intentional steps where gaps exist.</span>
+  </div>
+  <div class="connect-item">
+    <span class="connect-goal">Accessibility</span>
+    <span class="connect-action"><strong>Base Brand layer</strong> makes the architectural intent explicit: brand fonts are identity values, not defaults. Separating them from semantic usage tokens creates the structural foundation for directing brand fonts to display contexts and system fonts to body contexts.</span>
+  </div>
+  <div class="connect-item">
+    <span class="connect-goal">Token architecture</span>
+    <strong class="connect-action"><strong>5-layer architecture</strong> (Base · Base Brand · Usage · Composite · Component) establishes one canonical primitive per property, clear public/private boundaries, and a stable semantic layer — directly meeting Phase 2's program goals and laying the groundwork for Kin's language elevation.</span>
+  </div>
+</div>
+
+</div>
+<script>
+function toggleDropdown(id) {
+  document.querySelectorAll('.nav-dropdown').forEach(function(dd) {
+    if (dd.id !== id) dd.classList.remove('open');
+  });
+  document.getElementById(id).classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown').forEach(function(dd) { dd.classList.remove('open'); });
+  }
+});
+
+document.getElementById('themeBtn').addEventListener('click', function() {
+  var current = document.documentElement.getAttribute('data-theme') || 'light';
+  var next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('prism-theme', next);
+});
+</script>
+</body>
+</html>

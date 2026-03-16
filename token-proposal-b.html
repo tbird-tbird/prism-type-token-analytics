@@ -136,9 +136,9 @@
 <h2>Executive Summary</h2>
 <div class="summary-card-grid">
   <div class="summary-card">
-    <div class="card-eyebrow">Clarity</div>
-    <div class="card-title">Self-documenting tokens</div>
-    <div class="card-body">Token names now reflect their actual values, so designers and engineers can understand them at a glance — no lookup tables required.</div>
+    <div class="card-eyebrow">Compatibility</div>
+    <div class="card-title">Naming continuity</div>
+    <div class="card-body">Font-size, letter-spacing, and line-height tokens retain their existing index-based names, minimising refactoring work and maintaining continuity with the current system.</div>
   </div>
   <div class="summary-card">
     <div class="card-eyebrow">Precision</div>
@@ -166,7 +166,7 @@
   <div class="stat-card red"><div class="value">&minus;12</div><div class="label">Tokens Removed</div></div>
 </div>
 
-<div class="note-blue"><strong>Key architectural change:</strong> Font-size and line-height tokens switch from an index-based naming system (e.g., <code>base/font-size/25</code> = 18px) to a value-based system (e.g., <code>base/font-size/18</code> = 18). This makes token names more intuitive, reduces the chance of errors, and ensures abstraction happens at the usage layer rather than the base layer.</div>
+<div class="note-blue"><strong>Key architectural difference from Proposal A:</strong> Font-family and font-weight tokens are restructured for precision and consistency (same as Proposal A). Font-size, letter-spacing, and line-height retain their existing index-based naming (e.g., <code>base/font-size/25</code> = 18px), keeping naming continuity with the current system and minimising downstream refactoring.</div>
 
 <h2>Summary of changes by property</h2>
 
@@ -182,15 +182,15 @@
   </tr>
   <tr>
     <td><strong>font-size</strong></td><td>28 tokens</td><td>17 tokens</td><td style="color:#dc2626">&minus;11</td>
-    <td>Removed 10 unused semantic aliases + 1 numeric; switched to value-based naming</td>
+    <td>Removed 10 unused semantic aliases + 1 numeric; index-based naming retained</td>
   </tr>
   <tr>
     <td><strong>letter-spacing</strong></td><td>7 tokens</td><td>9 tokens</td><td style="color:#16a34a">+2</td>
-    <td>Switched to value-based naming (<code>n0p8</code> = &minus;0.8); revised scale values; added <code>n0p2</code> and <code>0</code></td>
+    <td>Index-based naming retained; revised scale values; added steps 5 (&minus;1) and 60 (&minus;0.1)</td>
   </tr>
   <tr>
     <td><strong>line-height</strong></td><td>15 tokens</td><td>19 tokens</td><td style="color:#16a34a">+4</td>
-    <td>Added 5 large values (48&ndash;80); removed step 55 (38px); switched to value-based naming</td>
+    <td>Added 5 large values (48&ndash;80); removed step 55 (38px); index-based naming retained</td>
   </tr>
 </table>
 
@@ -298,30 +298,28 @@
 
 <!-- ==================== FONT SIZE ==================== -->
 <h2>base/font-size</h2>
-<p>The most significant structural change. Token naming switches from an index-based system to a value-based system where the token name matches the pixel value. All 10 semantic t-shirt size aliases are removed (they were 100% unreferenced). <code>base/font-size/190</code> (84px) is also removed.</p>
-
-<div class="note-green"><strong>Why value-based naming?</strong> With index-based naming, <code>base/font-size/25</code> = 18px required memorising a lookup table. With value-based naming, <code>base/font-size/18</code> = 18px is self-documenting. This reduces cognitive load and errors, while ensuring any abstraction (like semantic sizing) happens at the usage token layer where it belongs.</div>
+<p>The same 10 semantic t-shirt size aliases are removed (they were 100% unreferenced) and <code>base/font-size/190</code> (84px) is also removed. Token naming retains the existing index-based system — no renaming of the 17 surviving tokens.</p>
 
 <h3>Proposed scale (17 tokens)</h3>
 <table>
-  <tr><th>Proposed token</th><th>Value (px)</th><th>Previous token</th><th>Status</th></tr>
-  <tr><td><code>base/font-size/10</code></td><td>10</td><td><code>base/font-size/5</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/12</code></td><td>12</td><td><code>base/font-size/10</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/14</code></td><td>14</td><td><code>base/font-size/15</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/16</code></td><td>16</td><td><code>base/font-size/20</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/18</code></td><td>18</td><td><code>base/font-size/25</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/20</code></td><td>20</td><td><code>base/font-size/30</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/22</code></td><td>22</td><td><code>base/font-size/35</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/24</code></td><td>24</td><td><code>base/font-size/40</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/28</code></td><td>28</td><td><code>base/font-size/50</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/32</code></td><td>32</td><td><code>base/font-size/60</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/36</code></td><td>36</td><td><code>base/font-size/70</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/40</code></td><td>40</td><td><code>base/font-size/80</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/44</code></td><td>44</td><td><code>base/font-size/90</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/48</code></td><td>48</td><td><code>base/font-size/100</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/56</code></td><td>56</td><td><code>base/font-size/120</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/60</code></td><td>60</td><td><code>base/font-size/130</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/font-size/72</code></td><td>72</td><td><code>base/font-size/160</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
+  <tr><th>Proposed token</th><th>Value (px)</th><th>Status</th></tr>
+  <tr><td><code>base/font-size/5</code></td><td>10</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/10</code></td><td>12</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/15</code></td><td>14</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/20</code></td><td>16</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/25</code></td><td>18</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/30</code></td><td>20</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/35</code></td><td>22</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/40</code></td><td>24</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/50</code></td><td>28</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/60</code></td><td>32</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/70</code></td><td>36</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/80</code></td><td>40</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/90</code></td><td>44</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/100</code></td><td>48</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/120</code></td><td>56</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/130</code></td><td>60</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/font-size/160</code></td><td>72</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
 </table>
 
 <h3>Removed tokens (11 tokens)</h3>
@@ -342,53 +340,53 @@
 
 <!-- ==================== LETTER SPACING ==================== -->
 <h2>base/letter-spacing</h2>
-<p>The letter-spacing scale has been revised for better distribution and switches to value-based naming, consistent with font-size and line-height. Token names use the <code>n</code> prefix for negative values and <code>p</code> in place of the decimal point (e.g. <code>n0p8</code> = &minus;0.8). Key value changes: <code>&minus;0.5</code> &rarr; <code>&minus;0.6</code>, <code>&minus;0.01</code> &rarr; <code>&minus;0.1</code>; added <code>&minus;0.2</code> and <code>0</code>.</p>
+<p>The letter-spacing scale has been revised for better distribution. Token naming retains the existing index-based system. Two new tokens are added: step 5 (&minus;1) and step 60 (&minus;0.1). Key value changes: <code>&minus;0.5</code> &rarr; <code>&minus;0.6</code> at step 20; <code>&minus;0.01</code> &rarr; <code>0</code> at step 70.</p>
 
 <table>
-  <tr><th>Proposed token</th><th>Value</th><th>Previous token</th><th>Previous value</th><th>Status</th></tr>
+  <tr><th>Proposed token</th><th>Value</th><th>Previous value</th><th>Status</th></tr>
   <tr>
-    <td><code>base/letter-spacing/n2</code></td><td>&minus;2</td>
     <td><code>base/letter-spacing/0</code></td><td>&minus;2</td>
-    <td><span class="tag tag-renamed">Renamed</span></td>
+    <td>&minus;2</td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
   </tr>
   <tr>
-    <td><code>base/letter-spacing/n1</code></td><td>&minus;1</td>
-    <td>&mdash;</td><td>&mdash;</td>
+    <td><code>base/letter-spacing/5</code></td><td>&minus;1</td>
+    <td>&mdash;</td>
     <td><span class="tag tag-added">Added</span></td>
   </tr>
   <tr>
-    <td><code>base/letter-spacing/n0p8</code></td><td>&minus;0.8</td>
     <td><code>base/letter-spacing/10</code></td><td>&minus;0.8</td>
-    <td><span class="tag tag-renamed">Renamed</span></td>
+    <td>&minus;0.8</td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
   </tr>
   <tr>
-    <td><code>base/letter-spacing/n0p6</code></td><td>&minus;0.6</td>
-    <td><code>base/letter-spacing/20</code></td><td><span class="val-old">&minus;0.5</span></td>
+    <td><code>base/letter-spacing/20</code></td><td>&minus;0.6</td>
+    <td><span class="val-old">&minus;0.5</span></td>
     <td><span class="tag tag-modified">Modified</span></td>
   </tr>
   <tr>
-    <td><code>base/letter-spacing/n0p4</code></td><td>&minus;0.4</td>
     <td><code>base/letter-spacing/30</code></td><td>&minus;0.4</td>
-    <td><span class="tag tag-renamed">Renamed</span></td>
+    <td>&minus;0.4</td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
   </tr>
   <tr>
-    <td><code>base/letter-spacing/n0p3</code></td><td>&minus;0.3</td>
     <td><code>base/letter-spacing/40</code></td><td>&minus;0.3</td>
-    <td><span class="tag tag-renamed">Renamed</span></td>
+    <td>&minus;0.3</td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
   </tr>
   <tr>
-    <td><code>base/letter-spacing/n0p2</code></td><td>&minus;0.2</td>
     <td><code>base/letter-spacing/50</code></td><td>&minus;0.2</td>
-    <td><span class="tag tag-renamed">Renamed</span></td>
+    <td>&minus;0.2</td>
+    <td><span class="tag tag-unchanged">Unchanged</span></td>
   </tr>
   <tr>
-    <td><code>base/letter-spacing/n0p1</code></td><td>&minus;0.1</td>
-    <td>&mdash;</td><td>&mdash;</td>
+    <td><code>base/letter-spacing/60</code></td><td>&minus;0.1</td>
+    <td>&mdash;</td>
     <td><span class="tag tag-added">Added</span></td>
   </tr>
   <tr>
-    <td><code>base/letter-spacing/0</code></td><td>0</td>
-    <td><code>base/letter-spacing/70</code></td><td><span class="val-old">&minus;0.01</span></td>
+    <td><code>base/letter-spacing/70</code></td><td>0</td>
+    <td><span class="val-old">&minus;0.01</span></td>
     <td><span class="tag tag-modified">Modified</span></td>
   </tr>
 </table>
@@ -397,30 +395,30 @@
 
 <!-- ==================== LINE HEIGHT ==================== -->
 <h2>base/line-height</h2>
-<p>Line-height switches to value-based naming (matching font-size). The scale is extended at the upper end to support larger display sizes, and <code>base/line-height/55</code> (38px) is removed. A note at step 32 marks where the increment widens from 2px to 4px.</p>
+<p>Token naming retains the existing index-based system. The scale is extended at the upper end to support larger display sizes, and <code>base/line-height/55</code> (38px) is removed. Five new steps are added (80, 95, 100, 140, 150).</p>
 
 <h3>Proposed scale (19 tokens)</h3>
 <table>
-  <tr><th>Proposed token</th><th>Value (px)</th><th>Previous token</th><th>Status</th></tr>
-  <tr><td><code>base/line-height/16</code></td><td>16</td><td><code>base/line-height/0</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/18</code></td><td>18</td><td><code>base/line-height/5</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/20</code></td><td>20</td><td><code>base/line-height/10</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/22</code></td><td>22</td><td><code>base/line-height/15</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/24</code></td><td>24</td><td><code>base/line-height/20</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/26</code></td><td>26</td><td><code>base/line-height/25</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/28</code></td><td>28</td><td><code>base/line-height/30</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/30</code></td><td>30</td><td><code>base/line-height/35</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/32</code></td><td>32</td><td><code>base/line-height/40</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/36</code></td><td>36</td><td><code>base/line-height/50</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/40</code></td><td>40</td><td><code>base/line-height/60</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/44</code></td><td>44</td><td><code>base/line-height/70</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/48</code></td><td>48</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
-  <tr><td><code>base/line-height/52</code></td><td>52</td><td><code>base/line-height/90</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/56</code></td><td>56</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
-  <tr><td><code>base/line-height/60</code></td><td>60</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
-  <tr><td><code>base/line-height/68</code></td><td>68</td><td><code>base/line-height/130</code></td><td><span class="tag tag-renamed">Renamed</span></td></tr>
-  <tr><td><code>base/line-height/72</code></td><td>72</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
-  <tr><td><code>base/line-height/80</code></td><td>80</td><td>&mdash;</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><th>Proposed token</th><th>Value (px)</th><th>Status</th></tr>
+  <tr><td><code>base/line-height/0</code></td><td>16</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/5</code></td><td>18</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/10</code></td><td>20</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/15</code></td><td>22</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/20</code></td><td>24</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/25</code></td><td>26</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/30</code></td><td>28</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/35</code></td><td>30</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/40</code></td><td>32</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/50</code></td><td>36</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/60</code></td><td>40</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/70</code></td><td>44</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/80</code></td><td>48</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/90</code></td><td>52</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/95</code></td><td>56</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/100</code></td><td>60</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/130</code></td><td>68</td><td><span class="tag tag-unchanged">Unchanged</span></td></tr>
+  <tr><td><code>base/line-height/140</code></td><td>72</td><td><span class="tag tag-added">Added</span></td></tr>
+  <tr><td><code>base/line-height/150</code></td><td>80</td><td><span class="tag tag-added">Added</span></td></tr>
 </table>
 
 <h3>Removed tokens (1 token)</h3>

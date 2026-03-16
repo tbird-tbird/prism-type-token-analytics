@@ -136,9 +136,9 @@
 <h2>Executive Summary</h2>
 <div class="summary-card-grid">
   <div class="summary-card">
-    <div class="card-eyebrow">Compatibility</div>
-    <div class="card-title">Naming continuity</div>
-    <div class="card-body">Font-size, letter-spacing, and line-height tokens retain their existing index-based names, minimising refactoring work and maintaining continuity with the current system.</div>
+    <div class="card-eyebrow">Flexibility</div>
+    <div class="card-title">Themeable base layer</div>
+    <div class="card-body">Index-based names decouple tokens from their values, so each theme mode can resolve the same token to a different value — keeping the base layer flexible across brands.</div>
   </div>
   <div class="summary-card">
     <div class="card-eyebrow">Precision</div>
@@ -166,7 +166,7 @@
   <div class="stat-card red"><div class="value">&minus;12</div><div class="label">Tokens Removed</div></div>
 </div>
 
-<div class="note-blue"><strong>Key architectural difference from Proposal A:</strong> Font-family and font-weight tokens are restructured for precision and consistency (same as Proposal A). Font-size, letter-spacing, and line-height retain their existing index-based naming (e.g., <code>base/font-size/25</code> = 18px), keeping naming continuity with the current system and minimising downstream refactoring.</div>
+<div class="note-blue"><strong>Key architectural difference from Proposal A:</strong> Font-size, letter-spacing, and line-height retain index-based naming (e.g., <code>base/font-size/25</code>) as a deliberate design decision — not a conservative default. Unlike value-based names, index-based names are decoupled from their values, so Consumer and Courier+ can resolve the same token to different values. This preserves themeability at the base layer.</div>
 
 <h2>Summary of changes by property</h2>
 
@@ -298,7 +298,7 @@
 
 <!-- ==================== FONT SIZE ==================== -->
 <h2>base/font-size</h2>
-<p>The same 10 semantic t-shirt size aliases are removed (they were 100% unreferenced) and <code>base/font-size/190</code> (84px) is also removed. Token naming retains the existing index-based system — no renaming of the 17 surviving tokens.</p>
+<p>The same 10 semantic t-shirt size aliases are removed (they were 100% unreferenced) and <code>base/font-size/190</code> (84px) is also removed. Index-based naming is retained by design — a name like <code>base/font-size/25</code> doesn't imply a fixed value, so Consumer and Courier+ can each resolve it differently at the theme layer.</p>
 
 <h3>Proposed scale (17 tokens)</h3>
 <table>
@@ -340,7 +340,7 @@
 
 <!-- ==================== LETTER SPACING ==================== -->
 <h2>base/letter-spacing</h2>
-<p>The letter-spacing scale has been revised for better distribution. Token naming retains the existing index-based system. Two new tokens are added: step 5 (&minus;1) and step 60 (&minus;0.1). Key value changes: <code>&minus;0.5</code> &rarr; <code>&minus;0.6</code> at step 20; <code>&minus;0.01</code> &rarr; <code>0</code> at step 70.</p>
+<p>The letter-spacing scale has been revised for better distribution. Index-based naming is retained by design, keeping these tokens themeable. Two new tokens are added: step 5 (&minus;1) and step 60 (&minus;0.1). Key value changes: <code>&minus;0.5</code> &rarr; <code>&minus;0.6</code> at step 20; <code>&minus;0.01</code> &rarr; <code>0</code> at step 70.</p>
 
 <table>
   <tr><th>Proposed token</th><th>Value</th><th>Previous value</th><th>Status</th></tr>
@@ -395,7 +395,7 @@
 
 <!-- ==================== LINE HEIGHT ==================== -->
 <h2>base/line-height</h2>
-<p>Token naming retains the existing index-based system. The scale is extended at the upper end to support larger display sizes, and <code>base/line-height/55</code> (38px) is removed. Five new steps are added (80, 95, 100, 140, 150).</p>
+<p>Index-based naming is retained by design, keeping these tokens themeable. The scale is extended at the upper end to support larger display sizes, and <code>base/line-height/55</code> (38px) is removed. Five new steps are added (80, 95, 100, 140, 150).</p>
 
 <h3>Proposed scale (19 tokens)</h3>
 <table>

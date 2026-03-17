@@ -66,6 +66,7 @@
   .stat-card .label { font-size: 12px; color: var(--muted); margin-top: 4px; }
   .stat-card.orange .value { color: #d97706; }
   .stat-card.green .value { color: #16a34a; }
+  .stat-card.red .value { color: #dc2626; }
   .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
   .tag-consumer { background: #eff6ff; color: #1e40af; }
   .tag-courier { background: #f0fdf4; color: #166534; }
@@ -139,9 +140,9 @@
     <div class="card-body">Type-style tokens reference usage property tokens, which reference base tokens. No direct base references in composite styles — the chain is <code>type-styles &rarr; usage &rarr; base</code>.</div>
   </div>
   <div class="summary-card">
-    <div class="card-eyebrow">Composability</div>
-    <div class="card-title">11 ready-to-use type styles</div>
-    <div class="card-body">Header and text patterns are defined as complete sets of property tokens, covering font-family, weight, size, letter-spacing, and line-height in a single style reference.</div>
+    <div class="card-eyebrow">Simplicity</div>
+    <div class="card-title">22 type styles reduced to 11</div>
+    <div class="card-body">The current Prism composite token set contains 22 type styles. This proposal halves that to 11 — drastically reducing the options designers need to choose from and the likelihood of misuse across products.</div>
   </div>
 </div>
 
@@ -150,6 +151,7 @@
 <div class="stat-grid">
   <div class="stat-card"><div class="value">30</div><div class="label">Property Tokens</div></div>
   <div class="stat-card"><div class="value">66</div><div class="label">Type-Style Tokens</div></div>
+  <div class="stat-card red"><div class="value">22 &rarr; 11</div><div class="label">Type Styles (50% reduction)</div></div>
   <div class="stat-card green"><div class="value">6</div><div class="label">Theme Modes</div></div>
   <div class="stat-card orange"><div class="value">3</div><div class="label">Manual Overrides</div></div>
 </div>

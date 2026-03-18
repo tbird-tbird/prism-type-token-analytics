@@ -361,10 +361,9 @@ function renderScale(name) {
     li.className = 'scale-item';
     var notInFoundation = name !== 'foundation' && !foundationSet[px];
     li.innerHTML =
-      '<div class="scale-specimen" style="font-size:' + px + 'px;' + weight + 'font-family:' + font + '">The quick brown fox' +
+      '<div class="scale-specimen" style="font-size:' + px + 'px;' + weight + 'font-family:' + font + '">The quick brown fox<span style="opacity:0.35;margin-left:0.75em;font-weight:300">' + px + 'px</span>' +
       (notInFoundation ? '<span class="scale-flag">Not in Foundation scale</span>' : '') +
-      '</div>' +
-      '<div class="scale-meta"><span class="scale-px' + (notInFoundation ? ' flagged' : '') + '">' + px + 'px</span></div>';
+      '</div>';
     list.appendChild(li);
   });
 }

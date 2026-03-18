@@ -256,7 +256,7 @@ function renderScale(name) {
   var list = document.getElementById('scaleList');
   var infoEl = document.getElementById('scaleInfo');
 
-  document.getElementById('scaleBanner').classList.toggle('visible', false);
+  document.getElementById('scaleBanner').classList.remove('visible');
 
   // Consumer: render by named type style
   if (name === 'consumer') {
@@ -298,7 +298,7 @@ function renderScale(name) {
     document.getElementById('scaleRange').textContent = minPx + 'px \u2013 ' + maxPx + 'px';
     var banner = document.getElementById('scaleBanner');
     banner.textContent = 'Speculative. Courier may wish to adjust.';
-    banner.classList.toggle('visible', bucket === 1);
+    if (bucket === 1) { banner.classList.add('visible'); } else { banner.classList.remove('visible'); }
     list.innerHTML = '';
     var currentSection = null;
     styles.forEach(function(style) {

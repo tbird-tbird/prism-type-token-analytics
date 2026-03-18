@@ -279,7 +279,7 @@ function renderScale(name) {
       li.className = 'scale-item';
       var lsDisplay = style.ls === 0 ? '0' : style.ls;
       li.innerHTML =
-        '<div class="scale-specimen" style="font-size:' + style.px + 'px;font-weight:' + style.weight + ';font-family:' + family + ';line-height:' + style.lh + 'px;letter-spacing:' + style.ls + 'px"><span style="text-decoration:' + style.decoration + '">The quick brown fox</span><span style="opacity:0.35;margin-left:1.5em;font-weight:300">' + style.px + ' / ' + style.lh + '</span></div>' +
+        '<div class="scale-specimen" style="font-size:' + style.px + 'px;font-weight:' + style.weight + ';font-family:' + family + ';line-height:' + style.lh + 'px;letter-spacing:' + style.ls + 'px"><span style="text-decoration:' + style.decoration + '">The quick brown fox</span><span style="opacity:0.35;margin-left:0.75em;font-weight:300">' + style.px + ' / ' + style.lh + '</span></div>' +
         '<div class="style-name"><code>' + style.name + '</code></div>';
       list.appendChild(li);
     });
@@ -310,7 +310,7 @@ function renderScale(name) {
       var li = document.createElement('li');
       li.className = 'scale-item';
       li.innerHTML =
-        '<div class="scale-specimen" style="font-size:' + style.px + 'px;font-weight:' + style.weight + ';font-family:' + family + ';line-height:' + style.lh + 'px;letter-spacing:' + style.ls + 'px"><span style="text-decoration:' + style.decoration + '">The quick brown fox</span><span style="opacity:0.35;margin-left:1.5em;font-weight:300">' + style.px + ' / ' + style.lh + '</span></div>' +
+        '<div class="scale-specimen" style="font-size:' + style.px + 'px;font-weight:' + style.weight + ';font-family:' + family + ';line-height:' + style.lh + 'px;letter-spacing:' + style.ls + 'px"><span style="text-decoration:' + style.decoration + '">The quick brown fox</span><span style="opacity:0.35;margin-left:0.75em;font-weight:300">' + style.px + ' / ' + style.lh + '</span></div>' +
         '<div class="style-name"><code>' + style.name + '</code></div>';
       list.appendChild(li);
     });

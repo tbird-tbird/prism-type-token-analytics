@@ -205,14 +205,36 @@ var consumerStyles = [
   { name: 'text-small-link',     section: 'Text Small',  px: 12, weight: 600, lh: 18, ls:  0,   family: 'body',    decoration: 'underline' },
 ];
 
-var courierBuckets = {
-  1: { sizes: [32, 24, 20, 16, 14], breaks: { displayAbove: 16, bodyAtOrBelow: 16 } },
-  2: { sizes: [40, 28, 22, 18, 16], breaks: { displayAbove: 18, bodyAtOrBelow: 18 } }
+var courierStyleBuckets = {
+  1: [
+    { name: 'header-large',        section: 'Header',      px: 32, weight: 800, lh: 32, ls: -0.6, family: 'display', decoration: 'none' },
+    { name: 'header-medium',       section: 'Header',      px: 20, weight: 800, lh: 24, ls: -0.4, family: 'display', decoration: 'none' },
+    { name: 'text-large-default',  section: 'Text Large',  px: 16, weight: 500, lh: 22, ls:  0,   family: 'body',    decoration: 'none' },
+    { name: 'text-large-strong',   section: 'Text Large',  px: 16, weight: 600, lh: 22, ls:  0,   family: 'body',    decoration: 'none' },
+    { name: 'text-large-link',     section: 'Text Large',  px: 16, weight: 600, lh: 22, ls:  0,   family: 'body',    decoration: 'underline' },
+    { name: 'text-medium-default', section: 'Text Medium', px: 14, weight: 500, lh: 20, ls:  0,   family: 'body',    decoration: 'none' },
+    { name: 'text-medium-strong',  section: 'Text Medium', px: 14, weight: 600, lh: 20, ls:  0,   family: 'body',    decoration: 'none' },
+    { name: 'text-medium-link',    section: 'Text Medium', px: 14, weight: 600, lh: 20, ls:  0,   family: 'body',    decoration: 'underline' },
+    { name: 'text-small-default',  section: 'Text Small',  px: 12, weight: 500, lh: 18, ls:  0,   family: 'body',    decoration: 'none' },
+    { name: 'text-small-strong',   section: 'Text Small',  px: 12, weight: 600, lh: 18, ls:  0,   family: 'body',    decoration: 'none' },
+    { name: 'text-small-link',     section: 'Text Small',  px: 12, weight: 600, lh: 18, ls:  0,   family: 'body',    decoration: 'underline' },
+  ],
+  2: [
+    { name: 'header-large',        section: 'Header',      px: 40, weight: 800, lh: 44, ls: -0.6, family: 'display', decoration: 'none' },
+    { name: 'header-medium',       section: 'Header',      px: 28, weight: 800, lh: 32, ls: -0.2, family: 'display', decoration: 'none' },
+    { name: 'text-large-default',  section: 'Text Large',  px: 22, weight: 500, lh: 28, ls:  0,   family: 'display', decoration: 'none' },
+    { name: 'text-large-strong',   section: 'Text Large',  px: 22, weight: 700, lh: 28, ls:  0,   family: 'display', decoration: 'none' },
+    { name: 'text-large-link',     section: 'Text Large',  px: 22, weight: 600, lh: 28, ls:  0,   family: 'display', decoration: 'underline' },
+    { name: 'text-medium-default', section: 'Text Medium', px: 18, weight: 500, lh: 24, ls:  0,   family: 'body',    decoration: 'none' },
+    { name: 'text-medium-strong',  section: 'Text Medium', px: 18, weight: 600, lh: 24, ls:  0,   family: 'body',    decoration: 'none' },
+    { name: 'text-medium-link',    section: 'Text Medium', px: 18, weight: 600, lh: 24, ls:  0,   family: 'body',    decoration: 'underline' },
+    { name: 'text-small-default',  section: 'Text Small',  px: 16, weight: 500, lh: 22, ls:  0,   family: 'body',    decoration: 'none' },
+    { name: 'text-small-strong',   section: 'Text Small',  px: 16, weight: 600, lh: 22, ls:  0,   family: 'body',    decoration: 'none' },
+    { name: 'text-small-link',     section: 'Text Small',  px: 12, weight: 600, lh: 18, ls:  0,   family: 'body',    decoration: 'underline' },
+  ]
 };
 
-var sectionBreaks = {
-  courier: { displayAbove: 16, bodyAtOrBelow: 16 }
-};
+var sectionBreaks = {};
 
 var foundationSet = {};
 scales.foundation.forEach(function(s) { foundationSet[s] = true; });
@@ -264,18 +286,39 @@ function renderScale(name) {
     return;
   }
 
-  var sizes, breaks;
-  var bucket = 0;
+  // Courier: render by named type style
   if (name === 'courier') {
-    bucket = parseInt(document.getElementById('bucketSlider').value);
-    var bd = courierBuckets[bucket];
-    sizes = bd.sizes;
-    breaks = bd.breaks;
-    document.getElementById('scaleBanner').classList.toggle('visible', bucket === 1);
-  } else {
-    sizes = scales[name];
-    breaks = sectionBreaks[name];
+    var bucket = parseInt(document.getElementById('bucketSlider').value);
+    var styles = courierStyleBuckets[bucket];
+    infoEl.style.display = '';
+    document.getElementById('stepCount').textContent = styles.length;
+    document.getElementById('stepLabel').textContent = 'type styles';
+    var minPx = styles.reduce(function(m, s) { return Math.min(m, s.px); }, Infinity);
+    var maxPx = styles.reduce(function(m, s) { return Math.max(m, s.px); }, 0);
+    document.getElementById('scaleRange').textContent = minPx + 'px \u2013 ' + maxPx + 'px';
+    list.innerHTML = '';
+    var currentSection = null;
+    styles.forEach(function(style) {
+      if (style.section !== currentSection) {
+        currentSection = style.section;
+        var hdr = document.createElement('li');
+        hdr.className = 'scale-section';
+        hdr.textContent = currentSection;
+        list.appendChild(hdr);
+      }
+      var family = style.family === 'display' ? displayFontMap[currentDisplayFont] : fontMap[currentFont];
+      var li = document.createElement('li');
+      li.className = 'scale-item';
+      li.innerHTML =
+        '<div class="scale-specimen" style="font-size:' + style.px + 'px;font-weight:' + style.weight + ';font-family:' + family + ';line-height:' + style.lh + 'px;letter-spacing:' + style.ls + 'px"><span style="text-decoration:' + style.decoration + '">The quick brown fox</span><span style="opacity:0.35;margin-left:1.5em;font-weight:300">' + style.px + ' / ' + style.lh + '</span></div>' +
+        '<div class="style-name"><code>' + style.name + '</code></div>';
+      list.appendChild(li);
+    });
+    return;
   }
+
+  var sizes = scales[name];
+  var breaks = sectionBreaks[name];
 
   document.getElementById('stepLabel').textContent = 'steps';
 

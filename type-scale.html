@@ -296,6 +296,9 @@ function renderScale(name) {
     var minPx = styles.reduce(function(m, s) { return Math.min(m, s.px); }, Infinity);
     var maxPx = styles.reduce(function(m, s) { return Math.max(m, s.px); }, 0);
     document.getElementById('scaleRange').textContent = minPx + 'px \u2013 ' + maxPx + 'px';
+    var banner = document.getElementById('scaleBanner');
+    banner.textContent = 'Speculative. Courier may wish to adjust.';
+    banner.classList.toggle('visible', bucket === 1);
     list.innerHTML = '';
     var currentSection = null;
     styles.forEach(function(style) {

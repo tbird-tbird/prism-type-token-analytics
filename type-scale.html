@@ -257,7 +257,7 @@ function renderScale(name) {
       li.className = 'scale-item';
       var lsDisplay = style.ls === 0 ? '0' : style.ls;
       li.innerHTML =
-        '<div class="scale-specimen" style="font-size:' + style.px + 'px;font-weight:' + style.weight + ';font-family:' + family + ';line-height:' + style.lh + 'px;letter-spacing:' + style.ls + 'px;text-decoration:' + style.decoration + '">The quick brown fox</div>' +
+        '<div class="scale-specimen" style="font-size:' + style.px + 'px;font-weight:' + style.weight + ';font-family:' + family + ';line-height:' + style.lh + 'px;letter-spacing:' + style.ls + 'px;text-decoration:' + style.decoration + '">The quick brown fox<span style="opacity:0.35;margin-left:1.5em">' + style.px + ' / ' + style.lh + '</span></div>' +
         '<div class="style-name"><code>' + style.name + '</code></div>' +
         '<div class="style-props">' + style.px + 'px &middot; ' + style.weight + ' &middot; ' + style.lh + 'lh</div>';
       list.appendChild(li);

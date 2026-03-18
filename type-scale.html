@@ -100,6 +100,10 @@
   .merchant-slider input[type="range"]::-moz-range-track { height: 2px; background: transparent; border: none; }
   [data-theme="light"] .merchant-slider input[type="range"]::-webkit-slider-thumb { background: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
   [data-theme="light"] .merchant-slider input[type="range"]::-moz-range-thumb { background: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .style-name { flex-shrink: 0; width: 200px; }
+  .style-name code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; color: var(--text); }
+  [data-theme="dark"] .style-name code { background: #1e1e1e; color: #ccc; }
+  .style-props { flex-shrink: 0; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 180px; }
 </style>
 <script>(function(){var t=localStorage.getItem("prism-theme")||"light";document.documentElement.setAttribute("data-theme",t)})()</script>
 </head>
@@ -163,7 +167,7 @@
 
 <div class="info-row">
   <div class="scale-info" id="scaleInfo">
-    <span class="step-group"><span class="count" id="stepCount">12</span> steps</span>
+    <span class="step-group"><span class="count" id="stepCount">12</span> <span id="stepLabel">steps</span></span>
     <span>Range: <span class="count" id="scaleRange">12px – 72px</span></span>
   </div>
   <div class="merchant-slider" id="merchantSlider">
@@ -184,9 +188,22 @@
 <script>
 var scales = {
   foundation: [72, 60, 48, 40, 32, 28, 24, 20, 18, 16, 14, 12],
-  consumer: [40, 32, 24, 20, 16, 14, 12],
   merchant: [],
 };
+
+var consumerStyles = [
+  { name: 'header-large',        section: 'Header',      px: 32, weight: 800, lh: 32, ls: -0.6, family: 'display', decoration: 'none' },
+  { name: 'header-medium',       section: 'Header',      px: 20, weight: 800, lh: 24, ls: -0.4, family: 'display', decoration: 'none' },
+  { name: 'text-large-default',  section: 'Text Large',  px: 16, weight: 500, lh: 22, ls:  0,   family: 'body',    decoration: 'none' },
+  { name: 'text-large-strong',   section: 'Text Large',  px: 16, weight: 600, lh: 22, ls:  0,   family: 'body',    decoration: 'none' },
+  { name: 'text-large-link',     section: 'Text Large',  px: 16, weight: 600, lh: 22, ls:  0,   family: 'body',    decoration: 'underline' },
+  { name: 'text-medium-default', section: 'Text Medium', px: 14, weight: 500, lh: 20, ls:  0,   family: 'body',    decoration: 'none' },
+  { name: 'text-medium-strong',  section: 'Text Medium', px: 14, weight: 600, lh: 20, ls:  0,   family: 'body',    decoration: 'none' },
+  { name: 'text-medium-link',    section: 'Text Medium', px: 14, weight: 600, lh: 20, ls:  0,   family: 'body',    decoration: 'underline' },
+  { name: 'text-small-default',  section: 'Text Small',  px: 12, weight: 500, lh: 18, ls:  0,   family: 'body',    decoration: 'none' },
+  { name: 'text-small-strong',   section: 'Text Small',  px: 12, weight: 600, lh: 18, ls:  0,   family: 'body',    decoration: 'none' },
+  { name: 'text-small-link',     section: 'Text Small',  px: 12, weight: 600, lh: 18, ls:  0,   family: 'body',    decoration: 'underline' },
+];
 
 var courierBuckets = {
   1: { sizes: [32, 24, 20, 16, 14], breaks: { displayAbove: 16, bodyAtOrBelow: 16 } },
@@ -194,8 +211,7 @@ var courierBuckets = {
 };
 
 var sectionBreaks = {
-  consumer: { displayAbove: 16, bodyAtOrBelow: 16 },
-  courier:  { displayAbove: 16, bodyAtOrBelow: 16 }
+  courier: { displayAbove: 16, bodyAtOrBelow: 16 }
 };
 
 var foundationSet = {};
@@ -215,6 +231,40 @@ var currentDisplayFont = 'ddnorms';
 var currentScale = 'foundation';
 
 function renderScale(name) {
+  var list = document.getElementById('scaleList');
+  var infoEl = document.getElementById('scaleInfo');
+
+  document.getElementById('scaleBanner').classList.toggle('visible', false);
+
+  // Consumer: render by named type style
+  if (name === 'consumer') {
+    infoEl.style.display = '';
+    document.getElementById('stepCount').textContent = consumerStyles.length;
+    document.getElementById('stepLabel').textContent = 'type styles';
+    document.getElementById('scaleRange').textContent = '12px \u2013 32px';
+    list.innerHTML = '';
+    var currentSection = null;
+    consumerStyles.forEach(function(style) {
+      if (style.section !== currentSection) {
+        currentSection = style.section;
+        var hdr = document.createElement('li');
+        hdr.className = 'scale-section';
+        hdr.textContent = currentSection;
+        list.appendChild(hdr);
+      }
+      var family = style.family === 'display' ? displayFontMap[currentDisplayFont] : fontMap[currentFont];
+      var li = document.createElement('li');
+      li.className = 'scale-item';
+      var lsDisplay = style.ls === 0 ? '0' : style.ls;
+      li.innerHTML =
+        '<div class="style-name"><code>' + style.name + '</code></div>' +
+        '<div class="style-props">' + style.px + 'px &middot; ' + style.weight + ' &middot; ' + style.lh + 'lh</div>' +
+        '<div class="scale-specimen" style="font-size:' + style.px + 'px;font-weight:' + style.weight + ';font-family:' + family + ';line-height:' + style.lh + 'px;letter-spacing:' + style.ls + 'px;text-decoration:' + style.decoration + '">The quick brown fox</div>';
+      list.appendChild(li);
+    });
+    return;
+  }
+
   var sizes, breaks;
   var bucket = 0;
   if (name === 'courier') {
@@ -222,15 +272,13 @@ function renderScale(name) {
     var bd = courierBuckets[bucket];
     sizes = bd.sizes;
     breaks = bd.breaks;
+    document.getElementById('scaleBanner').classList.toggle('visible', bucket === 1);
   } else {
     sizes = scales[name];
     breaks = sectionBreaks[name];
   }
 
-  document.getElementById('scaleBanner').classList.toggle('visible', name === 'courier' && bucket === 1);
-
-  var list = document.getElementById('scaleList');
-  var infoEl = document.getElementById('scaleInfo');
+  document.getElementById('stepLabel').textContent = 'steps';
 
   if (!sizes || !sizes.length) {
     infoEl.style.display = 'none';

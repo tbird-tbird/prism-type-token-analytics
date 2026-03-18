@@ -165,9 +165,7 @@
 </nav>
 
 <h1>Prism Type Token Architecture Proposal</h1>
-<p class="subtitle">Evolving from a 3-layer system to a 5-layer architecture by introducing a dedicated Base Brand primitive for typefaces and a Composite layer for Type Styles between Usage and Component.</p>
-
-<div class="note-blue"><strong>Note on the Composite layer:</strong> Composite Type tokens (Type Styles) already exist within the Usage layer today, sitting alongside primitive usage tokens. This proposal pulls them out into their own dedicated Composite layer — keeping things tidy and mirroring the same structural pattern being proposed for color tokens.</div>
+<p class="subtitle">Rationalising the existing 3-layer system — cleaning up the Base layer, consolidating all type primitives there including font-family, and keeping composite type styles within the Usage layer.</p>
 
 <h2>Architecture comparison</h2>
 <div class="proposal-grid">
@@ -240,7 +238,7 @@
   <div>
     <div class="col-header">
       <span class="col-label">Proposed</span>
-      <span class="col-count proposed-count">5 layers</span>
+      <span class="col-count proposed-count">3 layers</span>
     </div>
     <div class="layer-stack">
 
@@ -249,7 +247,7 @@
           <span class="layer-name">Component</span>
           <span class="layer-badge badge-private">Private</span>
         </div>
-        <div class="layer-desc">Component-specific typography bindings. References Type Style or Usage tokens.</div>
+        <div class="layer-desc">Component-specific typography bindings. References Usage tokens directly.</div>
         <div class="layer-chips">
           <span class="chip">Button</span>
           <span class="chip">Tag</span>
@@ -261,66 +259,36 @@
 
       <div class="layer-arrow">↑</div>
 
-      <div class="layer-box new layer-w2">
-        <div class="layer-header">
-          <span class="layer-name">Composite (Type Styles)</span>
-          <span class="layer-badge badge-new">New &middot; Public</span>
-        </div>
-        <div class="layer-desc">Composite Type tokens already live in Usage today. Pulling them into their own layer keeps primitive and composite tokens cleanly separated, and mirrors the Composite layer being introduced in the color token proposal.</div>
-        <div class="layer-chips">
-          <span class="chip">Display</span>
-          <span class="chip">Title</span>
-          <span class="chip">Body</span>
-          <span class="chip">Label</span>
-          <span class="chip">Link</span>
-        </div>
-      </div>
-
-      <div class="layer-arrow">↑</div>
-
       <div class="layer-box public layer-w3">
         <div class="layer-header">
           <span class="layer-name">Usage</span>
           <span class="layer-badge badge-public">Public</span>
         </div>
-        <div class="layer-desc">Semantic type tokens. References Base and Base Brand tokens. Font-family moves to its own dedicated layer.</div>
+        <div class="layer-desc">Semantic type tokens and composite type styles in one public layer. The single source of truth for designers and engineers. Font-family lives here alongside scale primitives.</div>
         <div class="layer-chips">
           <span class="chip">Font Size</span>
           <span class="chip">Line Height</span>
           <span class="chip">Letter Spacing</span>
           <span class="chip">Font Weight</span>
+          <span class="chip">Font Family</span>
+          <span class="chip">Type Styles</span>
         </div>
       </div>
 
       <div class="layer-arrow">↑</div>
 
-      <div class="layer-split layer-w4">
-        <div class="layer-box new">
-          <div class="layer-header">
-            <span class="layer-name">Base Brand</span>
-            <span class="layer-badge badge-new">New &middot; Public</span>
-          </div>
-          <div class="layer-desc">Brand-specific typefaces. Static identity values — not themeable per color mode.</div>
-          <div class="layer-chips">
-            <span class="chip">DD Norms</span>
-            <span class="chip">Omnes</span>
-            <span class="chip">Stratos</span>
-            <span class="chip">SF Pro</span>
-            <span class="chip">Inter</span>
-          </div>
+      <div class="layer-box layer-w4">
+        <div class="layer-header">
+          <span class="layer-name">Base</span>
+          <span class="layer-badge badge-private">Private</span>
         </div>
-        <div class="layer-box private">
-          <div class="layer-header">
-            <span class="layer-name">Base</span>
-            <span class="layer-badge badge-private">Private</span>
-          </div>
-          <div class="layer-desc">Numeric typographic scale. Cleaned up — semantic aliases removed, unused steps deprecated.</div>
-          <div class="layer-chips">
-            <span class="chip">font-size</span>
-            <span class="chip">line-height</span>
-            <span class="chip">letter-spacing</span>
-            <span class="chip">font-weight</span>
-          </div>
+        <div class="layer-desc">All raw typographic primitives in one place. Cleaned up — semantic aliases removed, unused steps deprecated. Font-family values consolidated here from Usage.</div>
+        <div class="layer-chips">
+          <span class="chip">font-size</span>
+          <span class="chip">line-height</span>
+          <span class="chip">letter-spacing</span>
+          <span class="chip">font-weight</span>
+          <span class="chip">font-family</span>
         </div>
       </div>
 
@@ -354,24 +322,8 @@
     <div class="issue-item">
       <div class="issue-icon icon-x">✕</div>
       <div class="issue-text">
-        <strong>Composite type tokens are mixed into Usage.</strong>
-        <span>Type Style tokens (usage/type/*) already exist — display, title, body, label, link — but they live alongside primitive usage tokens in the same layer, with no structural separation from scalar values like font-size and line-height.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-x">✕</div>
-      <div class="issue-text">
         <strong>Font-family has no structural home.</strong>
-        <span>Brand typefaces are embedded in Usage alongside semantic scale values, with no distinction between identity-level choices and functional type decisions.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-x">✕</div>
-      <div class="issue-text">
-        <strong>Base is completely private.</strong>
-        <span>Even brand-critical typefaces that partners need to reference are inaccessible — forcing teams to hardcode values or misuse the Usage layer.</span>
+        <span>Brand typefaces are embedded in Usage alongside semantic scale values, with no distinction between raw primitives and functional type decisions.</span>
       </div>
     </div>
 
@@ -407,24 +359,8 @@
     <div class="issue-item">
       <div class="issue-icon icon-check">✓</div>
       <div class="issue-text">
-        <strong>Type Style layer reorganizes existing composites.</strong>
-        <span>The usage/type/* tokens already exist — this proposal moves them into their own dedicated layer, cleanly separating composite type styles from primitive usage tokens and giving them a clear structural home.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-check">✓</div>
-      <div class="issue-text">
-        <strong>Base Brand gives typefaces a dedicated home.</strong>
-        <span>Brand fonts are accessible to designers and engineers without conflating brand identity with functional semantic values at the Usage layer.</span>
-      </div>
-    </div>
-
-    <div class="issue-item">
-      <div class="issue-icon icon-check">✓</div>
-      <div class="issue-text">
-        <strong>Base Brand is public by convention, not by enforcement.</strong>
-        <span>Figma publishes at the collection level — Base Brand can't be hidden within a shared collection. By documented convention, font-family tokens should only be consumed through Usage tokens, never referenced directly. This intent is enforced at the pipeline level (Style Dictionary), not by Figma.</span>
+        <strong>Font-family consolidated into Base.</strong>
+        <span>All raw typographic primitives — including typefaces — live in one private Base layer. Usage tokens reference Base for font-family, following the same pattern as font-size and line-height.</span>
       </div>
     </div>
 
@@ -441,27 +377,17 @@
 </div>
 
 <h2>Migration path</h2>
-<p style="font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6;">Two token groups are moving to new layers. Any Figma components or code referencing these paths will need updating. Recommend maintaining aliased tokens at old paths during a deprecation window before hard removal.</p>
+<p style="font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6;">One token group is moving to a new layer. Any Figma components or code referencing these paths will need updating. Recommend maintaining aliased tokens at old paths during a deprecation window before hard removal.</p>
 
 <div class="migration-grid">
   <div class="migration-item needs-migration">
     <div class="migration-label">Requires migration</div>
-    <div class="migration-title">Composite type tokens</div>
-    <div class="migration-desc">The usage/type/* variable group moves out of the Usage layer and into the new Composite layer. Any component or code referencing these tokens by path will break.</div>
-    <div class="migration-path">
-      <span class="path">usage/type/*</span>
-      <span class="arrow">→</span>
-      <span class="path">type/*</span>
-    </div>
-  </div>
-  <div class="migration-item needs-migration">
-    <div class="migration-label">Requires migration</div>
     <div class="migration-title">Font family tokens</div>
-    <div class="migration-desc">The usage/font-family/* variable group moves from the Usage layer into the new Base Brand layer. References in components and code will need to be updated.</div>
+    <div class="migration-desc">The usage/font-family/* variable group moves from the Usage layer into Base, consolidating all raw type primitives in one place.</div>
     <div class="migration-path">
       <span class="path">usage/font-family/*</span>
       <span class="arrow">→</span>
-      <span class="path">base-brand/font-family/*</span>
+      <span class="path">base/font-family/*</span>
     </div>
   </div>
   <div class="migration-item no-migration">
@@ -485,7 +411,7 @@
     </div>
   </div>
 </div>
-<p class="migration-note"><strong>Recommended approach:</strong> When moving usage/type/* and usage/font-family/* to their new layers, keep aliased tokens at the old paths for one release cycle with a deprecation notice. This gives consuming teams time to update references before the old paths are removed.</p>
+<p class="migration-note"><strong>Recommended approach:</strong> When moving usage/font-family/* to Base, keep aliased tokens at the old path for one release cycle with a deprecation notice. This gives consuming teams time to update references before the old path is removed.</p>
 
 <h2 style="margin-top: 40px;">Reference</h2>
 <div class="info-card" style="max-width: 520px;">
@@ -498,7 +424,7 @@
     <li>Type Style tokens reference Usage tokens — never Base directly</li>
     <li>Component tokens should reference Type Style tokens rather than bundling properties individually</li>
     <li>Changes to a Type Style token have a predictable, auditable blast radius</li>
-    <li>Type Style tokens are not brand-specific — brand differentiation lives in Base Brand</li>
+    <li>Type Style tokens are not brand-specific — brand differentiation lives in Base</li>
   </ol>
 </div>
 
